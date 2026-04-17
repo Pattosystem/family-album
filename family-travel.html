@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>家族アルバム</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#f5ede0;
+    --cream-2:#ebe0ce;
+    --paper:#ffffff;
+    --paper-2:#fffdf8;
+    --ink:#1a1a1a;
+    --ink-soft:#444444;
+    --muted:#888888;
+    --line:#d0c5ad;
+    --line-soft:#e5dcc8;
+
+    /* チーム色 — はっきりと見分けやすい青と赤橙 */
+    --kota:#1565c0;
+    --kota-dark:#0d47a1;
+    --kota-soft:#e3f2fd;
+    --kota-border:#90caf9;
+
+    --tokihiko:#d84315;
+    --tokihiko-dark:#bf360c;
+    --tokihiko-soft:#ffeee5;
+    --tokihiko-border:#ffab91;
+
+    --gold:#b8924a;
+    --ok:#2e7d32;
+    --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+    --shadow:0 4px 16px -4px rgba(0,0,0,.12);
+    --shadow-lg:0 12px 32px -8px rgba(0,0,0,.2);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;background:var(--cream);color:var(--ink);font-family:"Noto Sans JP",sans-serif;font-weight:400;font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  body{
+    background-image:radial-gradient(ellipse 70% 40% at 20% 0%, rgba(21,101,192,.05), transparent 60%);
+    min-height:100vh;
+  }
+  h1,h2,h3,h4{font-family:"Noto Serif JP",serif;font-weight:600;letter-spacing:.01em;margin:0;line-height:1.3}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;font-size:inherit}
+  input,textarea,select{font-family:inherit;color:var(--ink);font-size:15px}
+  a{color:var(--kota);text-decoration:underline;text-underline-offset:2px}
+  a:hover{opacity:.7}
+
+  /* ============ HEADER ============ */
+  header{
+    background:rgba(255,253,248,.96);
+    border-bottom:2px solid var(--line);
+    padding:16px 24px 0;
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(10px);
+  }
+  .header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{display:flex;align-items:center;gap:14px;min-width:0}
+  .brand-mark{
+    width:48px;height:48px;border-radius:12px;
+    background:linear-gradient(135deg,var(--kota) 0%,var(--kota) 48%,var(--tokihiko) 52%,var(--tokihiko) 100%);
+    display:flex;align-items:center;justify-content:center;color:#fff;
+    font-family:"Noto Serif JP",serif;font-size:22px;font-weight:700;
+    box-shadow:var(--shadow-sm);flex-shrink:0;
+  }
+  .brand h1{font-size:22px;font-weight:700;color:var(--ink)}
+  .brand .brand-sub{display:block;font-size:12px;color:var(--muted);margin-top:2px;font-weight:400}
+  .team-switch{display:flex;align-items:center;gap:10px;flex-shrink:0}
+  .team-pill{
+    display:flex;align-items:center;gap:8px;
+    padding:8px 14px;border-radius:10px;
+    background:var(--paper);border:2px solid var(--line-soft);
+    font-size:14px;font-weight:600;color:var(--ink);
+  }
+  .team-pill .dot{width:10px;height:10px;border-radius:50%;background:var(--muted)}
+  .team-pill.kota{border-color:var(--kota);background:var(--kota-soft);color:var(--kota-dark)}
+  .team-pill.kota .dot{background:var(--kota)}
+  .team-pill.tokihiko{border-color:var(--tokihiko);background:var(--tokihiko-soft);color:var(--tokihiko-dark)}
+  .team-pill.tokihiko .dot{background:var(--tokihiko)}
+  .btn-switch{
+    background:transparent;color:var(--ink-soft);font-size:13px;
+    padding:6px 12px;border:1px solid var(--line);border-radius:8px;
+  }
+  .btn-switch:hover{background:var(--cream-2)}
+
+  /* ============ TOP NAV ============ */
+  .main-nav{max-width:1100px;margin:14px auto 0;display:flex;gap:0;padding:0;border-bottom:1px solid transparent}
+  .main-nav button{
+    padding:14px 24px;border:none;background:transparent;
+    font-family:"Noto Sans JP",sans-serif;font-size:16px;font-weight:600;
+    color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;
+    transition:all .15s;display:flex;align-items:center;gap:8px;
+  }
+  .main-nav button:hover{color:var(--ink-soft)}
+  .main-nav button.active{color:var(--ink);border-bottom-color:var(--gold);background:rgba(255,255,255,.5)}
+  .main-nav .nav-icon{font-size:20px}
+
+  /* ============ LAYOUT ============ */
+  main{max-width:1100px;margin:0 auto;padding:28px 24px 120px}
+  .page-intro{margin-bottom:32px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+  .page-intro h2{font-size:32px;font-weight:700;color:var(--ink)}
+  .page-intro .sub{color:var(--ink-soft);font-size:14px;margin-top:4px}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:12px 22px;border-radius:10px;
+    background:var(--ink);color:#fff;
+    font-size:15px;font-weight:600;
+    transition:all .15s;
+    box-shadow:var(--shadow-sm);
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+  .btn.ghost{background:var(--paper);color:var(--ink);border:2px solid var(--line)}
+  .btn.ghost:hover{background:var(--cream-2)}
+  .btn.kota{background:var(--kota);color:#fff}
+  .btn.kota:hover{background:var(--kota-dark)}
+  .btn.tokihiko{background:var(--tokihiko);color:#fff}
+  .btn.tokihiko:hover{background:var(--tokihiko-dark)}
+  .btn.danger{background:var(--paper);color:#c62828;border:2px solid #ef9a9a}
+  .btn.danger:hover{background:#ffebee}
+  .btn.small{padding:8px 14px;font-size:13px;border-radius:8px}
+
+  /* ============ TRIP CARDS ============ */
+  .trips-grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+  .trip-card{
+    background:var(--paper);
+    border:2px solid var(--line-soft);
+    border-radius:14px;
+    padding:22px;
+    position:relative;
+    transition:all .2s;
+    cursor:pointer;
+    overflow:hidden;
+  }
+  .trip-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:var(--line)}
+  .trip-card::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:6px;
+    background:linear-gradient(90deg,var(--kota) 0%,var(--kota) 50%,var(--tokihiko) 50%,var(--tokihiko) 100%);
+  }
+  .trip-card .destination{font-family:"Noto Serif JP",serif;font-size:24px;font-weight:700;margin-bottom:4px;color:var(--ink)}
+  .trip-card .dest-sub{font-size:13px;color:var(--ink-soft);margin-bottom:14px}
+  .trip-card .dates-block{display:flex;flex-direction:column;gap:8px;margin:14px 0 16px;padding:14px;background:var(--cream);border-radius:10px;font-size:14px}
+  .trip-card .date-row{display:flex;align-items:center;gap:10px}
+  .trip-card .date-row .team-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+  .trip-card .date-row .team-dot.kota{background:var(--kota)}
+  .trip-card .date-row .team-dot.tokihiko{background:var(--tokihiko)}
+  .trip-card .date-row .team-name{font-weight:700;min-width:85px;color:var(--ink)}
+  .trip-card .date-row .team-name.kota{color:var(--kota-dark)}
+  .trip-card .date-row .team-name.tokihiko{color:var(--tokihiko-dark)}
+  .trip-card .date-row .date-val{color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .trip-card .date-row .date-val.empty{color:var(--muted);font-style:italic}
+  .trip-card .stats{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:var(--ink-soft);padding-top:14px;border-top:1px dashed var(--line-soft)}
+  .trip-card .stat{display:flex;align-items:center;gap:4px;font-weight:500}
+
+  /* ============ TRIP DETAIL ============ */
+  .detail-header{
+    background:var(--paper);border:2px solid var(--line-soft);border-radius:18px;
+    padding:28px 30px;margin-bottom:24px;position:relative;overflow:hidden;
+  }
+  .detail-header::before{content:"";position:absolute;top:0;left:0;width:6px;bottom:0;background:linear-gradient(180deg,var(--kota) 0%,var(--kota) 50%,var(--tokihiko) 50%,var(--tokihiko) 100%)}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink-soft);border:none;margin-bottom:14px;font-weight:500}
+  .back-link:hover{color:var(--ink)}
+  .detail-header h2{font-size:34px;font-weight:700;margin-bottom:4px;color:var(--ink)}
+  .detail-header .dest-sub{font-size:14px;color:var(--ink-soft);margin-bottom:14px}
+  .detail-header .notes{font-size:14px;color:var(--ink-soft);line-height:1.7;max-width:600px;margin-top:10px;background:var(--cream);padding:12px 14px;border-radius:8px}
+  .detail-header .header-actions{position:absolute;top:24px;right:24px;display:flex;gap:8px}
+
+  /* ============ TIMELINE ============ */
+  .timeline-card{background:var(--paper);border:2px solid var(--line-soft);border-radius:14px;padding:22px;margin-bottom:24px}
+  .timeline-title{font-size:15px;color:var(--ink);font-weight:600;margin-bottom:16px}
+  .timeline{position:relative;padding:20px 0 8px}
+  .timeline-scale{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums;margin-bottom:8px;padding:0 2px;font-weight:500}
+  .timeline-track{position:relative;height:80px;background:var(--cream);border-radius:10px;overflow:hidden;border:1px solid var(--line-soft)}
+  .tl-bar{position:absolute;height:30px;border-radius:6px;display:flex;align-items:center;padding:0 12px;color:#fff;font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden}
+  .tl-bar.kota{background:var(--kota);top:10px}
+  .tl-bar.tokihiko{background:var(--tokihiko);top:44px}
+  .tl-overlap{position:absolute;top:10px;height:60px;background:repeating-linear-gradient(45deg,rgba(184,146,74,.25),rgba(184,146,74,.25) 6px,transparent 6px,transparent 12px);border-left:2px dashed var(--gold);border-right:2px dashed var(--gold)}
+  .tl-empty{color:var(--muted);text-align:center;padding:24px;font-size:14px}
+
+  /* ============ TABS ============ */
+  .tabs{display:flex;gap:4px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  .tab{padding:12px 18px;border-radius:10px 10px 0 0;background:transparent;color:var(--ink-soft);font-size:14px;border-bottom:3px solid transparent;white-space:nowrap;font-weight:600;transition:all .15s}
+  .tab:hover{color:var(--ink);background:var(--cream-2)}
+  .tab.active{color:var(--ink);border-bottom-color:var(--gold);background:var(--paper)}
+  .tab .count{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:10px;background:var(--cream-2);font-size:11px;color:var(--ink-soft);font-weight:700}
+  .tab.active .count{background:var(--gold);color:#fff}
+
+  /* ============ SECTION ============ */
+  .section{background:var(--paper);border:2px solid var(--line-soft);border-radius:14px;padding:24px}
+  .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+  .section-header h3{font-size:22px;font-weight:700;color:var(--ink)}
+
+  /* ============ ITEM CARDS ============ */
+  .items-list{display:flex;flex-direction:column;gap:14px}
+  .item-card{border:2px solid var(--line-soft);border-radius:10px;padding:16px 18px;background:var(--paper-2);position:relative;transition:all .15s}
+  .item-card:hover{box-shadow:var(--shadow-sm)}
+  .item-card.kota{border-left:6px solid var(--kota)}
+  .item-card.tokihiko{border-left:6px solid var(--tokihiko)}
+  .item-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px}
+  .item-head-left{flex:1;min-width:0}
+  .item-title{font-family:"Noto Serif JP",serif;font-size:17px;font-weight:600;line-height:1.4;margin-bottom:4px;color:var(--ink)}
+  .item-meta{font-size:12px;color:var(--ink-soft)}
+  .team-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:700;white-space:nowrap}
+  .team-badge.kota{background:var(--kota);color:#fff}
+  .team-badge.tokihiko{background:var(--tokihiko);color:#fff}
+  .item-body{font-size:14px;color:var(--ink);line-height:1.7}
+  .item-body .row{display:flex;gap:10px;margin-bottom:4px;flex-wrap:wrap}
+  .item-body .row .label{color:var(--ink-soft);min-width:90px;font-size:13px;font-weight:500}
+  .item-body .row .val{flex:1;min-width:0;word-break:break-word}
+  .item-body .notes{margin-top:12px;padding:12px 14px;background:#fff8e7;border-radius:8px;font-size:13px;border-left:4px solid var(--gold);white-space:pre-wrap;line-height:1.7}
+  .item-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .item-actions .btn-icon{padding:6px 12px;font-size:13px;border-radius:6px;background:var(--paper);border:1px solid var(--line);color:var(--ink-soft);font-weight:500}
+  .item-actions .btn-icon:hover{background:var(--cream-2)}
+  .item-actions .btn-icon.del{color:#c62828;border-color:#ef9a9a}
+  .item-actions .btn-icon.del:hover{background:#ffebee}
+
+  /* ============ PHOTOS GRID ============ */
+  .photos-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+  .photo-card{background:var(--paper);border:2px solid var(--line-soft);border-radius:10px;overflow:hidden;aspect-ratio:4/3;position:relative;cursor:pointer;transition:all .2s}
+  .photo-card:hover{transform:scale(1.02);box-shadow:var(--shadow)}
+  .photo-card img{width:100%;height:100%;object-fit:cover;display:block}
+  .photo-card .photo-overlay{position:absolute;bottom:0;left:0;right:0;padding:10px;background:linear-gradient(transparent,rgba(0,0,0,.75));color:#fff;font-size:13px;display:flex;justify-content:space-between;align-items:center;font-weight:500}
+  .photo-card .photo-caption{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .photo-card .mini-badge{padding:2px 7px;border-radius:6px;font-size:11px;font-weight:700}
+  .photo-card .mini-badge.kota{background:var(--kota);color:#fff}
+  .photo-card .mini-badge.tokihiko{background:var(--tokihiko);color:#fff}
+
+  .empty-state{text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:15px}
+  .empty-state .icon{font-size:44px;margin-bottom:12px;opacity:.7}
+
+  /* ============ MOMENTS (日常) ============ */
+  .moments-controls{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;align-items:center}
+  .filter-chip{
+    padding:9px 16px;border-radius:10px;border:2px solid var(--line);
+    background:var(--paper);font-size:14px;color:var(--ink);font-weight:600;
+    display:inline-flex;align-items:center;gap:6px;transition:all .15s;
+  }
+  .filter-chip:hover{background:var(--cream-2)}
+  .filter-chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .filter-chip.active.kota{background:var(--kota);border-color:var(--kota);color:#fff}
+  .filter-chip.active.tokihiko{background:var(--tokihiko);border-color:var(--tokihiko);color:#fff}
+
+  .month-section{margin-bottom:36px}
+  .month-header{
+    display:flex;align-items:baseline;gap:14px;margin-bottom:16px;
+    padding-bottom:12px;border-bottom:2px solid var(--line-soft);
+  }
+  .month-header h3{font-family:"Noto Serif JP",serif;font-size:26px;font-weight:700;color:var(--ink)}
+  .month-header .month-count{margin-left:auto;font-size:14px;color:var(--ink-soft);font-weight:500}
+
+  .moments-grid{
+    display:grid;gap:14px;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    grid-auto-rows:10px;
+  }
+  @media(max-width:640px){.moments-grid{grid-template-columns:repeat(2,1fr);gap:10px}}
+
+  .moment-card{
+    background:var(--paper);border:2px solid var(--line-soft);
+    border-radius:12px;overflow:hidden;cursor:pointer;
+    transition:all .2s;position:relative;
+    display:flex;flex-direction:column;
+  }
+  .moment-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+  .moment-card.kota{border-top:5px solid var(--kota)}
+  .moment-card.tokihiko{border-top:5px solid var(--tokihiko)}
+  .moment-media{position:relative;background:var(--cream);overflow:hidden;aspect-ratio:1/1}
+  .moment-media.tall{aspect-ratio:3/4}
+  .moment-media.wide{aspect-ratio:4/3}
+  .moment-media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+  .moment-card:hover .moment-media img{transform:scale(1.04)}
+  .moment-media .team-label-badge{
+    position:absolute;top:10px;right:10px;padding:4px 10px;
+    border-radius:6px;font-size:12px;font-weight:700;color:#fff;
+    box-shadow:0 2px 4px rgba(0,0,0,.2);
+  }
+  .moment-media .team-label-badge.kota{background:var(--kota)}
+  .moment-media .team-label-badge.tokihiko{background:var(--tokihiko)}
+
+  .moment-body{padding:14px;flex:1;display:flex;flex-direction:column}
+  .moment-title{font-family:"Noto Serif JP",serif;font-size:16px;font-weight:700;line-height:1.4;margin-bottom:6px;color:var(--ink)}
+  .moment-desc{font-size:13px;color:var(--ink-soft);line-height:1.6;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .moment-meta{font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:10px;border-top:1px dashed var(--line-soft)}
+  .moment-meta .by{font-weight:600;color:var(--ink)}
+
+  .moment-card.note-only{padding:20px 22px}
+  .moment-card.note-only .moment-body{padding:0}
+  .moment-card.note-only .moment-title{font-size:18px;margin-bottom:10px}
+  .moment-card.note-only .moment-desc{-webkit-line-clamp:unset;font-size:14px;line-height:1.7}
+  .moment-card.note-only::before{
+    content:"💬";position:absolute;top:-14px;left:14px;
+    background:var(--gold);color:#fff;width:28px;height:28px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:13px;
+    box-shadow:0 2px 4px rgba(0,0,0,.15);
+  }
+
+  /* ============ MODAL ============ */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;z-index:100;padding:0;backdrop-filter:blur(4px);animation:fadeIn .18s ease}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal{background:var(--paper);border-radius:18px 18px 0 0;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;padding:26px 24px 30px;position:relative;animation:slideUp .22s cubic-bezier(.2,.8,.2,1);box-shadow:0 -20px 60px -10px rgba(0,0,0,.3)}
+  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  @media(min-width:640px){.modal-backdrop{align-items:center;padding:20px}.modal{border-radius:18px;animation:scaleIn .2s cubic-bezier(.2,.8,.2,1)}@keyframes scaleIn{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}}
+  .modal h3{font-size:22px;font-weight:700;margin-bottom:4px}
+  .modal .modal-sub{font-size:14px;color:var(--ink-soft);margin-bottom:20px}
+  .modal-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink);background:var(--cream);font-size:20px;font-weight:700}
+  .modal-close:hover{background:var(--cream-2)}
+  .form-row{margin-bottom:16px}
+  .form-row label{display:block;font-size:14px;color:var(--ink);margin-bottom:6px;font-weight:600}
+  .form-row label .req{color:var(--tokihiko);font-weight:700}
+  .form-row input,.form-row textarea,.form-row select{width:100%;padding:12px 14px;background:var(--paper-2);border:2px solid var(--line-soft);border-radius:8px;font-size:15px;font-family:inherit;color:var(--ink);transition:all .15s}
+  .form-row input:focus,.form-row textarea:focus,.form-row select:focus{outline:none;border-color:var(--gold);background:var(--paper);box-shadow:0 0 0 3px rgba(184,146,74,.15)}
+  .form-row textarea{resize:vertical;min-height:80px;line-height:1.6}
+  .form-row .hint{font-size:12px;color:var(--ink-soft);margin-top:6px}
+  .form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:520px){.form-grid-2{grid-template-columns:1fr}}
+  .modal-actions{display:flex;gap:10px;margin-top:24px;justify-content:flex-end}
+  @media(max-width:520px){.modal-actions{flex-direction:column-reverse}.modal-actions .btn{width:100%;justify-content:center}}
+
+  .team-choice{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .team-choice label{cursor:pointer;padding:0;border-radius:10px;text-align:center;position:relative}
+  .team-choice input{display:none}
+  .team-choice .label-inner{display:block;padding:18px 12px;border:3px solid var(--line-soft);border-radius:10px;transition:all .15s;background:var(--paper)}
+  .team-choice .label-inner .team-label-name{font-family:"Noto Serif JP",serif;font-size:22px;font-weight:700;display:block;margin-bottom:4px;color:var(--ink)}
+  .team-choice .label-inner .team-label-sub{font-size:12px;color:var(--ink-soft);font-weight:500}
+  .team-choice input:checked + .label-inner.k{background:var(--kota-soft);border-color:var(--kota)}
+  .team-choice input:checked + .label-inner.k .team-label-name{color:var(--kota-dark)}
+  .team-choice input:checked + .label-inner.t{background:var(--tokihiko-soft);border-color:var(--tokihiko)}
+  .team-choice input:checked + .label-inner.t .team-label-name{color:var(--tokihiko-dark)}
+
+  /* type choice */
+  .type-choice{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px}
+  .type-choice label{cursor:pointer;padding:0;border-radius:10px;text-align:center;position:relative}
+  .type-choice input{display:none}
+  .type-choice .tc-inner{display:block;padding:14px 8px;border:3px solid var(--line-soft);border-radius:10px;transition:all .15s;background:var(--paper)}
+  .type-choice .tc-inner .tc-icon{font-size:24px;display:block;margin-bottom:4px}
+  .type-choice .tc-inner .tc-name{font-size:13px;font-weight:600;color:var(--ink)}
+  .type-choice input:checked + .tc-inner{background:var(--gold);border-color:var(--gold)}
+  .type-choice input:checked + .tc-inner .tc-name{color:#fff}
+
+  /* ============ PHOTO UPLOAD ============ */
+  .photo-upload-wrap{margin-bottom:4px}
+  .photo-picker-btn{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+    padding:32px 20px;background:var(--cream);
+    border:3px dashed var(--line);border-radius:12px;
+    cursor:pointer;transition:all .15s;text-align:center;
+  }
+  .photo-picker-btn:hover{background:var(--cream-2);border-color:var(--gold)}
+  .photo-picker-btn:active{transform:scale(.99)}
+  .photo-picker-btn .ppb-icon{font-size:44px;line-height:1}
+  .photo-picker-btn .ppb-text{font-size:18px;font-weight:700;color:var(--ink)}
+  .photo-picker-btn .ppb-sub{font-size:13px;color:var(--ink-soft)}
+  .photo-picker-btn.compressing{opacity:.6;pointer-events:none}
+  .photo-picker-btn.compressing .ppb-text::after{content:" 処理中..."}
+
+  .photo-preview-area{
+    position:relative;border:2px solid var(--line);border-radius:12px;
+    overflow:hidden;background:var(--cream);margin-bottom:10px;
+  }
+  .photo-preview-area img{width:100%;max-height:300px;object-fit:contain;display:block;background:#000}
+  .photo-remove{
+    position:absolute;top:10px;right:10px;
+    width:40px;height:40px;border-radius:50%;
+    background:rgba(0,0,0,.75);color:#fff;font-size:22px;
+    display:flex;align-items:center;justify-content:center;font-weight:700;
+    box-shadow:0 2px 8px rgba(0,0,0,.3);
+  }
+  .photo-remove:hover{background:rgba(0,0,0,.9)}
+  .photo-size-info{
+    position:absolute;bottom:10px;left:10px;
+    background:rgba(0,0,0,.7);color:#fff;padding:4px 10px;
+    border-radius:6px;font-size:12px;font-weight:500;
+  }
+
+  .url-fallback{margin-top:12px;border-top:1px dashed var(--line-soft);padding-top:12px}
+  .url-fallback summary{
+    cursor:pointer;font-size:13px;color:var(--ink-soft);
+    padding:6px 0;list-style:none;display:flex;align-items:center;gap:4px;
+  }
+  .url-fallback summary::-webkit-details-marker{display:none}
+  .url-fallback summary::before{content:"▶";font-size:10px;transition:transform .15s}
+  .url-fallback[open] summary::before{transform:rotate(90deg)}
+  .url-fallback summary:hover{color:var(--ink)}
+  .url-fallback input{margin-top:8px}
+
+  /* ============ SETUP BANNER ============ */
+  .setup-banner{background:linear-gradient(135deg,#fff8e7 0%,#fef3d8 100%);border:2px solid #e8d598;border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:14px;color:#6b5420;display:flex;align-items:center;gap:10px;flex-wrap:wrap;line-height:1.6}
+  .setup-banner strong{color:#4a3815}
+
+  /* ============ LIGHTBOX ============ */
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px;flex-direction:column;gap:16px}
+  .lightbox .media-wrap{max-width:100%;max-height:78vh;display:flex;align-items:center;justify-content:center}
+  .lightbox img{max-width:100%;max-height:78vh;object-fit:contain}
+  .lightbox .lb-info{color:#fff;max-width:600px;text-align:center;padding:0 20px}
+  .lightbox .lb-info h4{font-size:20px;font-weight:700;margin-bottom:8px}
+  .lightbox .lb-info p{font-size:15px;opacity:.9;line-height:1.7;white-space:pre-wrap}
+  .lightbox .lb-info .by-line{margin-top:12px;font-size:13px;opacity:.8}
+  .lightbox .close{position:absolute;top:20px;right:20px;color:#fff;font-size:32px;background:rgba(255,255,255,.15);width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;font-weight:700}
+  .lightbox .close:hover{background:rgba(255,255,255,.25)}
+
+  /* ============ TOAST ============ */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:14px 22px;border-radius:999px;font-size:14px;font-weight:500;z-index:300;box-shadow:var(--shadow-lg);animation:toastIn .2s cubic-bezier(.2,.8,.2,1)}
+  @keyframes toastIn{from{transform:translate(-50%,20px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+
+  /* ============ MOBILE ============ */
+  @media(max-width:640px){
+    html,body{font-size:15px}
+    header{padding:12px 16px 0}
+    .brand h1{font-size:18px}
+    .brand .brand-sub{font-size:11px}
+    .brand-mark{width:40px;height:40px;font-size:18px}
+    main{padding:20px 16px 100px}
+    .page-intro h2{font-size:26px}
+    .detail-header{padding:22px 20px}
+    .detail-header h2{font-size:26px}
+    .detail-header .header-actions{position:static;margin-top:16px}
+    .team-pill{font-size:13px;padding:7px 12px}
+    .main-nav button{padding:12px 16px;font-size:15px}
+    .month-header h3{font-size:22px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-mark">家</div>
+      <div>
+        <h1>家族アルバム</h1>
+        <span class="brand-sub">みんなで共有</span>
+      </div>
+    </div>
+    <div class="team-switch">
+      <div class="team-pill" id="teamPill">
+        <span class="dot"></span>
+        <span id="teamPillName">未設定</span>
+      </div>
+      <button class="btn-switch" onclick="openTeamSelect()">切替</button>
+    </div>
+  </div>
+  <nav class="main-nav" id="mainNav">
+    <button id="nav-trips" onclick="switchMainView('trips')"><span class="nav-icon">✈️</span>旅行</button>
+    <button id="nav-moments" onclick="switchMainView('moments')"><span class="nav-icon">📷</span>日常</button>
+  </nav>
+</header>
+
+<main id="main"></main>
+
+<div id="modalRoot"></div>
+<div id="lightboxRoot"></div>
+<div id="toastRoot"></div>
+
+<script>
+/* ========================================================================
+   FIREBASE 設定 — 複数端末で共有する場合はここに設定を入力
+   ======================================================================== */
+const FIREBASE_CONFIG = {
+  // apiKey: "YOUR_API_KEY",
+  // authDomain: "your-project.firebaseapp.com",
+  // databaseURL: "https://your-project-default-rtdb.firebaseio.com",
+  // projectId: "your-project",
+  // storageBucket: "your-project.appspot.com",
+  // messagingSenderId: "...",
+  // appId: "..."
+};
+const USE_FIREBASE = !!FIREBASE_CONFIG.apiKey;
+
+/* ========================================================================
+   STATE
+   ======================================================================== */
+const STATE = {
+  currentTeam: localStorage.getItem('ft_team') || null,
+  memberName: localStorage.getItem('ft_member') || '',
+  mainView: localStorage.getItem('ft_mainView') || 'trips',
+  view: 'list',
+  currentTripId: null,
+  trips: [],
+  moments: [],
+  momentFilter: 'all',
+};
+
+const STORAGE_KEY = 'family_travel_data_v1';
+const STORAGE_KEY_MOMENTS = 'family_moments_data_v1';
+
+function loadData(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){ STATE.trips = JSON.parse(raw); }
+    else { STATE.trips = seedTrips(); saveData(); }
+  }catch(e){ STATE.trips = []; }
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY_MOMENTS);
+    if(raw){ STATE.moments = JSON.parse(raw); }
+    else { STATE.moments = seedMoments(); saveMomentsData(); }
+  }catch(e){ STATE.moments = []; }
+}
+function saveData(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE.trips)); }
+function saveMomentsData(){ localStorage.setItem(STORAGE_KEY_MOMENTS, JSON.stringify(STATE.moments)); }
+
+function seedTrips(){
+  return [{
+    id:'t_seed_1', destination:'沖縄', destSub:'',
+    notes:'サンプルデータです。編集・削除できます。', kotaStart:'2026-05-02', kotaEnd:'2026-05-06',
+    tokihikoStart:'2026-05-01', tokihikoEnd:'2026-05-08',
+    items:[
+      {id:'i1',type:'flight',team:'kota',title:'ANA 1731便 関空→那覇',
+       fields:{airline:'ANA',flightNo:'NH1731',depart:'関空 09:20',arrive:'那覇 11:35',date:'2026-05-02',bookingSite:'ANA公式',bookingUrl:'https://www.ana.co.jp/'},
+       notes:'早割でかなり安く取れました。おすすめです。',createdAt:Date.now()-86400000*3,createdBy:'こうた'},
+      {id:'i2',type:'hotel',team:'kota',title:'ザ・ブセナテラス',
+       fields:{address:'沖縄県名護市喜瀬1808',checkin:'2026-05-02',checkout:'2026-05-06',bookingSite:'楽天トラベル',bookingUrl:'https://travel.rakuten.co.jp/'},
+       notes:'プライベートビーチ付きで家族向けです。',createdAt:Date.now()-86400000*2,createdBy:'こうた'},
+      {id:'i3',type:'rec',team:'tokihiko',title:'ゆうなんぎい（沖縄料理）',
+       fields:{category:'レストラン',area:'那覇市久茂地'},
+       notes:'地元の方おすすめの老舗。沖縄料理はここがおすすめ。予約した方が良いです。',createdAt:Date.now()-86400000,createdBy:'父'},
+    ],
+    createdAt:Date.now()-86400000*5,
+  }];
+}
+
+function seedMoments(){
+  const now = Date.now();
+  return [
+    {id:'m1',type:'photo',team:'kota',title:'週末のピクニック',
+     mediaUrl:'https://images.unsplash.com/photo-1526401485004-46910ecc8e51?w=800',
+     description:'子供たちと近所の公園へ行きました。桜がまだ少し残ってました。',
+     date:'2026-04-12',createdAt:now-86400000*5,createdBy:'こうた'},
+    {id:'m2',type:'note',team:'tokihiko',title:'今週の近況',
+     description:'先週は京都に一泊してきました。祇園の桜が見事で、来年はみんなで行きたいですね。\n写真は別途送ります。',
+     date:'2026-04-10',createdAt:now-86400000*7,createdBy:'父'},
+    {id:'m3',type:'photo',team:'tokihiko',title:'朝の散歩',
+     mediaUrl:'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800',
+     description:'湖畔の朝。空気が澄んでて気持ちよかった。',
+     date:'2026-04-08',createdAt:now-86400000*9,createdBy:'父'},
+    {id:'m4',type:'photo',team:'kota',title:'娘の入学式',
+     mediaUrl:'https://images.unsplash.com/photo-1491013516836-7db643ee125a?w=800',
+     description:'無事に小学校に入学しました。あっという間です。',
+     date:'2026-04-06',createdAt:now-86400000*11,createdBy:'妻'},
+  ];
+}
+
+/* ========================================================================
+   FIREBASE
+   ======================================================================== */
+let fbApp, fbDb;
+async function initFirebase(){
+  if(!USE_FIREBASE) return;
+  const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js');
+  const { getDatabase, ref, onValue, set, remove } = await import('https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js');
+  fbApp = initializeApp(FIREBASE_CONFIG);
+  fbDb = getDatabase(fbApp);
+  window._fb = { ref, onValue, set, remove };
+  onValue(ref(fbDb, 'trips'), snap => {
+    const val = snap.val() || {};
+    STATE.trips = Object.values(val).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    render();
+  });
+  onValue(ref(fbDb, 'moments'), snap => {
+    const val = snap.val() || {};
+    STATE.moments = Object.values(val).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    render();
+  });
+}
+async function syncTrip(trip){
+  if(!USE_FIREBASE){ saveData(); return; }
+  const { ref, set } = window._fb;
+  await set(ref(fbDb, 'trips/'+trip.id), trip);
+}
+async function deleteTrip(tripId){
+  if(!USE_FIREBASE){ STATE.trips = STATE.trips.filter(t=>t.id!==tripId); saveData(); return; }
+  const { ref, remove } = window._fb;
+  await remove(ref(fbDb, 'trips/'+tripId));
+}
+async function syncMoment(m){
+  if(!USE_FIREBASE){ saveMomentsData(); return; }
+  const { ref, set } = window._fb;
+  await set(ref(fbDb, 'moments/'+m.id), m);
+}
+async function deleteMomentFB(mid){
+  if(!USE_FIREBASE){ STATE.moments = STATE.moments.filter(m=>m.id!==mid); saveMomentsData(); return; }
+  const { ref, remove } = window._fb;
+  await remove(ref(fbDb, 'moments/'+mid));
+}
+
+/* ========================================================================
+   HELPERS
+   ======================================================================== */
+function uid(){ return 'x'+Math.random().toString(36).slice(2,10)+Date.now().toString(36) }
+function fmtDate(s){ if(!s) return ''; const d=new Date(s); if(isNaN(d)) return s; return d.toLocaleDateString('ja-JP',{month:'numeric',day:'numeric',weekday:'short'}); }
+function fmtDateShort(s){ if(!s) return ''; const d=new Date(s); if(isNaN(d)) return s; return (d.getMonth()+1)+'月'+d.getDate()+'日'; }
+function fmtDateLong(s){ if(!s) return ''; const d=new Date(s); if(isNaN(d)) return s; return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日'; }
+function escapeHtml(str){ if(str==null) return ''; return String(str).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function teamLabel(t){ return t==='kota'?'こうた家':t==='tokihiko'?'父家':'' }
+function toast(msg){
+  const root = document.getElementById('toastRoot');
+  root.innerHTML = `<div class="toast">${escapeHtml(msg)}</div>`;
+  setTimeout(()=>{ root.innerHTML = ''; }, 2200);
+}
+
+/* ========================================================================
+   PHOTO UPLOAD & COMPRESSION
+   ======================================================================== */
+function compressImage(file, maxDim=1400, quality=0.82){
+  return new Promise((resolve, reject) => {
+    if(!file.type.startsWith('image/')){
+      reject(new Error('画像ファイルではありません'));
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if(w > maxDim || h > maxDim){
+          if(w > h){ h = Math.round(h * (maxDim / w)); w = maxDim; }
+          else { w = Math.round(w * (maxDim / h)); h = maxDim; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        try {
+          const dataUrl = canvas.toDataURL('image/jpeg', quality);
+          resolve(dataUrl);
+        } catch(err){ reject(err); }
+      };
+      img.onerror = () => reject(new Error('画像の読み込みに失敗しました'));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error('ファイルの読み込みに失敗しました'));
+    reader.readAsDataURL(file);
+  });
+}
+
+function estimateDataUrlSize(dataUrl){
+  if(!dataUrl || !dataUrl.startsWith('data:')) return 0;
+  const base64 = dataUrl.split(',')[1] || '';
+  return Math.round(base64.length * 0.75); // bytes
+}
+function formatSize(bytes){
+  if(bytes < 1024) return bytes + 'B';
+  if(bytes < 1024*1024) return Math.round(bytes/1024) + 'KB';
+  return (bytes/1024/1024).toFixed(1) + 'MB';
+}
+
+async function handlePhotoFile(inputEl, previewAreaId, previewImgId, hiddenUrlId, sizeInfoId, pickerBtnId){
+  const file = inputEl.files[0];
+  if(!file) return;
+  if(!file.type.startsWith('image/')){ toast('画像ファイルを選んでください'); return; }
+  const pickerBtn = document.getElementById(pickerBtnId);
+  if(pickerBtn) pickerBtn.classList.add('compressing');
+  try {
+    const dataUrl = await compressImage(file);
+    document.getElementById(hiddenUrlId).value = dataUrl;
+    document.getElementById(previewImgId).src = dataUrl;
+    document.getElementById(previewAreaId).style.display = 'block';
+    if(pickerBtn) pickerBtn.style.display = 'none';
+    const size = estimateDataUrlSize(dataUrl);
+    const sizeInfo = document.getElementById(sizeInfoId);
+    if(sizeInfo) sizeInfo.textContent = '容量: ' + formatSize(size);
+  } catch(err){
+    toast('画像の処理に失敗しました: ' + err.message);
+  } finally {
+    if(pickerBtn) pickerBtn.classList.remove('compressing');
+    inputEl.value = ''; // reset file input
+  }
+}
+
+function clearPhotoUpload(previewAreaId, pickerBtnId, hiddenUrlId, urlManualId){
+  document.getElementById(previewAreaId).style.display = 'none';
+  const pickerBtn = document.getElementById(pickerBtnId);
+  if(pickerBtn) pickerBtn.style.display = 'flex';
+  document.getElementById(hiddenUrlId).value = '';
+  const urlManual = document.getElementById(urlManualId);
+  if(urlManual) urlManual.value = '';
+}
+
+function syncUrlToHidden(manualId, hiddenId, previewAreaId, previewImgId, pickerBtnId, sizeInfoId){
+  const url = document.getElementById(manualId).value.trim();
+  document.getElementById(hiddenId).value = url;
+  if(url){
+    document.getElementById(previewImgId).src = url;
+    document.getElementById(previewAreaId).style.display = 'block';
+    document.getElementById(pickerBtnId).style.display = 'none';
+    const sizeInfo = document.getElementById(sizeInfoId);
+    if(sizeInfo) sizeInfo.textContent = '外部URL';
+  } else {
+    document.getElementById(previewAreaId).style.display = 'none';
+    document.getElementById(pickerBtnId).style.display = 'flex';
+  }
+}
+
+function renderPhotoUploadField(prefix, existingUrl){
+  const hasExisting = !!existingUrl;
+  const isDataUrl = existingUrl && existingUrl.startsWith('data:');
+  return `
+    <div class="photo-upload-wrap">
+      <div class="photo-preview-area" id="${prefix}_previewArea" style="display:${hasExisting?'block':'none'}">
+        <img id="${prefix}_previewImg" src="${hasExisting?escapeHtml(existingUrl):''}">
+        <div class="photo-size-info" id="${prefix}_sizeInfo">${isDataUrl?'容量: '+formatSize(estimateDataUrlSize(existingUrl)):hasExisting?'外部URL':''}</div>
+        <button type="button" class="photo-remove" onclick="clearPhotoUpload('${prefix}_previewArea','${prefix}_pickerBtn','${prefix}_hiddenUrl','${prefix}_urlManual')">×</button>
+      </div>
+      <label class="photo-picker-btn" id="${prefix}_pickerBtn" style="display:${hasExisting?'none':'flex'}">
+        <input type="file" accept="image/*" onchange="handlePhotoFile(this,'${prefix}_previewArea','${prefix}_previewImg','${prefix}_hiddenUrl','${prefix}_sizeInfo','${prefix}_pickerBtn')" hidden>
+        <span class="ppb-icon">📷</span>
+        <span class="ppb-text">写真を選ぶ</span>
+        <span class="ppb-sub">スマホ・PCから選択</span>
+      </label>
+      <input type="hidden" id="${prefix}_hiddenUrl" value="${hasExisting?escapeHtml(existingUrl):''}">
+      <details class="url-fallback" ${hasExisting && !isDataUrl ? 'open':''}>
+        <summary>画像のURLから追加する場合</summary>
+        <input type="url" id="${prefix}_urlManual" value="${hasExisting && !isDataUrl ? escapeHtml(existingUrl):''}" placeholder="https://..." oninput="syncUrlToHidden('${prefix}_urlManual','${prefix}_hiddenUrl','${prefix}_previewArea','${prefix}_previewImg','${prefix}_pickerBtn','${prefix}_sizeInfo')">
+      </details>
+    </div>
+  `;
+}
+
+/* ========================================================================
+   RENDER
+   ======================================================================== */
+function render(){
+  if(!STATE.currentTeam){ openTeamSelect(); }
+  updateTeamPill();
+  updateNav();
+  const main = document.getElementById('main');
+  if(STATE.mainView === 'moments'){ main.innerHTML = renderMomentsView(); return; }
+  if(STATE.view === 'list') main.innerHTML = renderList();
+  else if(STATE.view === 'detail') main.innerHTML = renderDetail();
+}
+
+function updateTeamPill(){
+  const pill = document.getElementById('teamPill');
+  const name = document.getElementById('teamPillName');
+  pill.classList.remove('kota','tokihiko');
+  if(STATE.currentTeam){
+    pill.classList.add(STATE.currentTeam);
+    name.textContent = teamLabel(STATE.currentTeam) + (STATE.memberName?' / '+STATE.memberName:'');
+  } else { name.textContent = '未選択'; }
+}
+function updateNav(){
+  document.getElementById('nav-trips').classList.toggle('active', STATE.mainView==='trips');
+  document.getElementById('nav-moments').classList.toggle('active', STATE.mainView==='moments');
+}
+
+function switchMainView(v){
+  STATE.mainView = v;
+  localStorage.setItem('ft_mainView', v);
+  STATE.view = 'list';
+  STATE.currentTripId = null;
+  render();
+  window.scrollTo(0,0);
+}
+
+/* ========================================================================
+   TRIPS — LIST
+   ======================================================================== */
+function renderList(){
+  const banner = !USE_FIREBASE ? `
+    <div class="setup-banner">
+      <span>💡</span>
+      <div><strong>この端末だけで保存中</strong>です。家族みんなで共有するには、このファイル内の <code>FIREBASE_CONFIG</code> にFirebaseの設定を入れてください。</div>
+    </div>` : '';
+
+  if(!STATE.trips.length){
+    return banner + `
+      <div class="page-intro">
+        <div><h2>旅行の記録</h2><div class="sub">新しい旅行を追加しましょう</div></div>
+        <button class="btn" onclick="openTripModal()">+ 旅行を追加</button>
+      </div>
+      <div class="empty-state"><div class="icon">✈️</div><div>まだ旅行がありません</div></div>
+    `;
+  }
+
+  const cards = STATE.trips.map(trip => {
+    const counts = countItems(trip);
+    return `
+      <div class="trip-card" onclick="openTrip('${trip.id}')">
+        ${trip.destSub?`<div class="dest-sub">${escapeHtml(trip.destSub)}</div>`:''}
+        <div class="destination">${escapeHtml(trip.destination)}</div>
+        <div class="dates-block">
+          <div class="date-row">
+            <span class="team-dot kota"></span>
+            <span class="team-name kota">こうた家</span>
+            <span class="date-val ${trip.kotaStart?'':'empty'}">${trip.kotaStart ? fmtDateShort(trip.kotaStart)+' 〜 '+fmtDateShort(trip.kotaEnd||trip.kotaStart) : '未定'}</span>
+          </div>
+          <div class="date-row">
+            <span class="team-dot tokihiko"></span>
+            <span class="team-name tokihiko">父家</span>
+            <span class="date-val ${trip.tokihikoStart?'':'empty'}">${trip.tokihikoStart ? fmtDateShort(trip.tokihikoStart)+' 〜 '+fmtDateShort(trip.tokihikoEnd||trip.tokihikoStart) : '未定'}</span>
+          </div>
+        </div>
+        <div class="stats">
+          <span class="stat">✈️ 飛行機 ${counts.flight}</span>
+          <span class="stat">🏨 宿泊 ${counts.hotel}</span>
+          <span class="stat">🚗 車 ${counts.car}</span>
+          <span class="stat">📷 写真 ${counts.photo}</span>
+          <span class="stat">💡 おすすめ ${counts.rec}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  return banner + `
+    <div class="page-intro">
+      <div>
+        <h2>旅行の記録</h2>
+        <div class="sub">${STATE.trips.length}件の旅行 / ${teamLabel(STATE.currentTeam)}で投稿中</div>
+      </div>
+      <button class="btn" onclick="openTripModal()">+ 旅行を追加</button>
+    </div>
+    <div class="trips-grid">${cards}</div>
+  `;
+}
+
+function countItems(trip){
+  const items = trip.items || [];
+  return {
+    flight: items.filter(i=>i.type==='flight').length,
+    hotel: items.filter(i=>i.type==='hotel').length,
+    car: items.filter(i=>i.type==='car').length,
+    photo: items.filter(i=>i.type==='photo').length,
+    rec: items.filter(i=>i.type==='rec').length,
+  };
+}
+
+/* ========================================================================
+   TRIPS — DETAIL
+   ======================================================================== */
+let DETAIL_TAB = 'overview';
+
+function renderDetail(){
+  const trip = STATE.trips.find(t=>t.id===STATE.currentTripId);
+  if(!trip){ STATE.view='list'; return renderList(); }
+  const counts = countItems(trip);
+
+  return `
+    <div class="detail-header">
+      <button class="back-link" onclick="backToList()">← 旅行一覧に戻る</button>
+      <div class="header-actions">
+        <button class="btn ghost small" onclick="openTripModal('${trip.id}')">編集</button>
+        <button class="btn danger small" onclick="confirmDeleteTrip('${trip.id}')">削除</button>
+      </div>
+      ${trip.destSub?`<div class="dest-sub">${escapeHtml(trip.destSub)}</div>`:''}
+      <h2>${escapeHtml(trip.destination)}</h2>
+      ${trip.notes ? `<div class="notes">${escapeHtml(trip.notes)}</div>` : ''}
+    </div>
+    ${renderTimeline(trip)}
+    <div class="tabs">
+      <button class="tab ${DETAIL_TAB==='overview'?'active':''}" onclick="setTab('overview')">まとめ</button>
+      <button class="tab ${DETAIL_TAB==='flight'?'active':''}" onclick="setTab('flight')">✈️ 飛行機<span class="count">${counts.flight}</span></button>
+      <button class="tab ${DETAIL_TAB==='hotel'?'active':''}" onclick="setTab('hotel')">🏨 宿泊<span class="count">${counts.hotel}</span></button>
+      <button class="tab ${DETAIL_TAB==='car'?'active':''}" onclick="setTab('car')">🚗 レンタカー<span class="count">${counts.car}</span></button>
+      <button class="tab ${DETAIL_TAB==='photo'?'active':''}" onclick="setTab('photo')">📷 写真<span class="count">${counts.photo}</span></button>
+      <button class="tab ${DETAIL_TAB==='rec'?'active':''}" onclick="setTab('rec')">💡 おすすめ<span class="count">${counts.rec}</span></button>
+    </div>
+    <div class="section">${renderTabContent(trip)}</div>
+  `;
+}
+
+function renderTimeline(trip){
+  const hasK = trip.kotaStart && trip.kotaEnd;
+  const hasT = trip.tokihikoStart && trip.tokihikoEnd;
+  if(!hasK && !hasT){
+    return `<div class="timeline-card"><div class="timeline-title">日程</div><div class="tl-empty">日程が未入力です</div></div>`;
+  }
+  const dates = [trip.kotaStart,trip.kotaEnd,trip.tokihikoStart,trip.tokihikoEnd].filter(Boolean);
+  const min = new Date(Math.min(...dates.map(d=>new Date(d))));
+  const max = new Date(Math.max(...dates.map(d=>new Date(d))));
+  const total = (max - min) + 86400000;
+  const pct = s => ((new Date(s)-min)/total)*100;
+  const widthPct = (s,e) => (((new Date(e)-new Date(s))+86400000)/total)*100;
+
+  let kotaBar='', tokihikoBar='', overlapBar='';
+  if(hasK) kotaBar = `<div class="tl-bar kota" style="left:${pct(trip.kotaStart)}%;width:${widthPct(trip.kotaStart,trip.kotaEnd)}%">こうた家</div>`;
+  if(hasT) tokihikoBar = `<div class="tl-bar tokihiko" style="left:${pct(trip.tokihikoStart)}%;width:${widthPct(trip.tokihikoStart,trip.tokihikoEnd)}%">父家</div>`;
+  if(hasK && hasT){
+    const ovS = new Date(Math.max(new Date(trip.kotaStart), new Date(trip.tokihikoStart)));
+    const ovE = new Date(Math.min(new Date(trip.kotaEnd), new Date(trip.tokihikoEnd)));
+    if(ovE >= ovS){
+      const ovDays = Math.round((ovE-ovS)/86400000)+1;
+      overlapBar = `<div class="tl-overlap" style="left:${((ovS-min)/total)*100}%;width:${(((ovE-ovS)+86400000)/total)*100}%" title="重なり${ovDays}日"></div>`;
+    }
+  }
+
+  return `
+    <div class="timeline-card">
+      <div class="timeline-title">日程 (斜線は両家族の滞在が重なる期間)</div>
+      <div class="timeline">
+        <div class="timeline-scale"><span>${fmtDate(min)}</span><span>${fmtDate(max)}</span></div>
+        <div class="timeline-track">${overlapBar}${kotaBar}${tokihikoBar}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderTabContent(trip){
+  if(DETAIL_TAB === 'overview') return renderOverview(trip);
+  const typeMap = {flight:'飛行機',hotel:'宿泊',car:'レンタカー',photo:'写真',rec:'おすすめ・メモ'};
+  const items = (trip.items||[]).filter(i=>i.type===DETAIL_TAB).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  const addBtn = `<button class="btn ${STATE.currentTeam}" onclick="openItemModal('${DETAIL_TAB}')">+ ${teamLabel(STATE.currentTeam)}として追加</button>`;
+
+  if(DETAIL_TAB === 'photo'){
+    const photos = items.map(i => `
+      <div class="photo-card" onclick="openLightbox('${escapeHtml(i.fields.url)}','image','${escapeHtml(i.title||'')}','${escapeHtml(i.notes||'')}')">
+        <img src="${escapeHtml(i.fields.url)}" alt="" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 75%22%3E%3Crect width=%22100%22 height=%2275%22 fill=%22%23f0ebe0%22/%3E%3Ctext x=%2250%22 y=%2240%22 text-anchor=%22middle%22 fill=%22%239a8e82%22 font-size=%2212%22%3E画像エラー%3C/text%3E%3C/svg%3E'">
+        <div class="photo-overlay">
+          <span class="photo-caption">${escapeHtml(i.title || '')}</span>
+          <span class="mini-badge ${i.team}">${i.team==='kota'?'こうた家':'父家'}</span>
+        </div>
+      </div>
+    `).join('');
+    return `
+      <div class="section-header"><h3>📷 写真</h3>${addBtn}</div>
+      ${items.length ? `<div class="photos-grid">${photos}</div>` : `<div class="empty-state"><div>まだ写真がありません</div></div>`}
+      ${items.length ? `<div style="margin-top:20px">${renderItemsList(items.filter(i=>i.notes), true)}</div>` : ''}
+    `;
+  }
+
+  return `
+    <div class="section-header"><h3>${iconFor(DETAIL_TAB)} ${typeMap[DETAIL_TAB]}</h3>${addBtn}</div>
+    ${items.length ? renderItemsList(items) : `<div class="empty-state"><div>まだ${typeMap[DETAIL_TAB]}の情報がありません</div></div>`}
+  `;
+}
+
+function iconFor(type){ return {flight:'✈️',hotel:'🏨',car:'🚗',photo:'📷',rec:'💡'}[type] || '' }
+
+function renderOverview(trip){
+  const items = trip.items || [];
+  const recent = [...items].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).slice(0,8);
+  if(!recent.length){
+    return `<div class="section-header"><h3>最近の投稿</h3></div><div class="empty-state"><div>まだ情報がありません。各タブから追加してください</div></div>`;
+  }
+  return `<div class="section-header"><h3>最近の投稿</h3></div>${renderItemsList(recent)}`;
+}
+
+function renderItemsList(items, compact){
+  return `<div class="items-list">${items.map(i=>renderItemCard(i,compact)).join('')}</div>`;
+}
+
+function renderItemCard(item, compact){
+  const f = item.fields || {};
+  let body = '';
+  if(item.type === 'flight'){
+    body = `
+      ${f.airline||f.flightNo?`<div class="row"><span class="label">便名</span><span class="val">${escapeHtml([f.airline,f.flightNo].filter(Boolean).join(' '))}</span></div>`:''}
+      ${f.date?`<div class="row"><span class="label">日付</span><span class="val">${fmtDate(f.date)}</span></div>`:''}
+      ${f.depart?`<div class="row"><span class="label">出発</span><span class="val">${escapeHtml(f.depart)}</span></div>`:''}
+      ${f.arrive?`<div class="row"><span class="label">到着</span><span class="val">${escapeHtml(f.arrive)}</span></div>`:''}
+      ${f.bookingSite?`<div class="row"><span class="label">予約サイト</span><span class="val">${f.bookingUrl?`<a href="${escapeHtml(f.bookingUrl)}" target="_blank" rel="noopener">${escapeHtml(f.bookingSite)} ↗</a>`:escapeHtml(f.bookingSite)}</span></div>`:''}
+    `;
+  } else if(item.type === 'hotel'){
+    body = `
+      ${f.address?`<div class="row"><span class="label">住所</span><span class="val">${escapeHtml(f.address)}</span></div>`:''}
+      ${f.checkin?`<div class="row"><span class="label">チェックイン</span><span class="val">${fmtDate(f.checkin)}</span></div>`:''}
+      ${f.checkout?`<div class="row"><span class="label">チェックアウト</span><span class="val">${fmtDate(f.checkout)}</span></div>`:''}
+      ${f.bookingSite?`<div class="row"><span class="label">予約サイト</span><span class="val">${f.bookingUrl?`<a href="${escapeHtml(f.bookingUrl)}" target="_blank" rel="noopener">${escapeHtml(f.bookingSite)} ↗</a>`:escapeHtml(f.bookingSite)}</span></div>`:''}
+    `;
+  } else if(item.type === 'car'){
+    body = `
+      ${f.company?`<div class="row"><span class="label">会社</span><span class="val">${escapeHtml(f.company)}</span></div>`:''}
+      ${f.pickup?`<div class="row"><span class="label">受取</span><span class="val">${escapeHtml(f.pickup)}</span></div>`:''}
+      ${f.return?`<div class="row"><span class="label">返却</span><span class="val">${escapeHtml(f.return)}</span></div>`:''}
+      ${f.pickupDate?`<div class="row"><span class="label">期間</span><span class="val">${fmtDate(f.pickupDate)} 〜 ${fmtDate(f.returnDate||'')}</span></div>`:''}
+      ${f.bookingSite?`<div class="row"><span class="label">予約サイト</span><span class="val">${f.bookingUrl?`<a href="${escapeHtml(f.bookingUrl)}" target="_blank" rel="noopener">${escapeHtml(f.bookingSite)} ↗</a>`:escapeHtml(f.bookingSite)}</span></div>`:''}
+    `;
+  } else if(item.type === 'photo'){
+    if(!compact) body = `<div class="row"><span class="label">URL</span><span class="val"><a href="${escapeHtml(f.url)}" target="_blank" rel="noopener">画像を開く ↗</a></span></div>`;
+  } else if(item.type === 'rec'){
+    body = `
+      ${f.category?`<div class="row"><span class="label">種類</span><span class="val">${escapeHtml(f.category)}</span></div>`:''}
+      ${f.area?`<div class="row"><span class="label">場所</span><span class="val">${escapeHtml(f.area)}</span></div>`:''}
+      ${f.url?`<div class="row"><span class="label">リンク</span><span class="val"><a href="${escapeHtml(f.url)}" target="_blank" rel="noopener">${escapeHtml(f.url)} ↗</a></span></div>`:''}
+    `;
+  }
+
+  return `
+    <div class="item-card ${item.team}">
+      <div class="item-head">
+        <div class="item-head-left">
+          <div class="item-title">${iconFor(item.type)} ${escapeHtml(item.title)}</div>
+          <div class="item-meta">${item.createdBy?escapeHtml(item.createdBy)+' / ':''}${item.createdAt?new Date(item.createdAt).toLocaleDateString('ja-JP'):''}</div>
+        </div>
+        <span class="team-badge ${item.team}">${item.team==='kota'?'こうた家':'父家'}</span>
+      </div>
+      ${body?`<div class="item-body">${body}</div>`:''}
+      ${item.notes?`<div class="item-body"><div class="notes">${escapeHtml(item.notes)}</div></div>`:''}
+      <div class="item-actions">
+        <button class="btn-icon" onclick="openItemModal('${item.type}','${item.id}')">編集</button>
+        <button class="btn-icon del" onclick="confirmDeleteItem('${item.id}')">削除</button>
+      </div>
+    </div>
+  `;
+}
+
+/* ========================================================================
+   MOMENTS (日常)
+   ======================================================================== */
+function renderMomentsView(){
+  const banner = !USE_FIREBASE ? `
+    <div class="setup-banner">
+      <span>💡</span>
+      <div><strong>この端末だけで保存中</strong>です。家族みんなで共有するには、このファイル内の <code>FIREBASE_CONFIG</code> にFirebaseの設定を入れてください。</div>
+    </div>` : '';
+
+  const filtered = filterMoments();
+
+  if(!STATE.moments.length){
+    return banner + `
+      <div class="page-intro">
+        <div><h2>日常の記録</h2><div class="sub">写真・メッセージで近況を共有</div></div>
+        <button class="btn ${STATE.currentTeam}" onclick="openMomentModal()">+ 投稿する</button>
+      </div>
+      <div class="empty-state"><div class="icon">📷</div><div>まだ投稿がありません</div></div>
+    `;
+  }
+
+  const grouped = groupMomentsByMonth(filtered);
+
+  return banner + `
+    <div class="page-intro">
+      <div><h2>日常の記録</h2><div class="sub">${STATE.moments.length}件の投稿 / ${teamLabel(STATE.currentTeam)}で投稿中</div></div>
+      <button class="btn ${STATE.currentTeam}" onclick="openMomentModal()">+ 投稿する</button>
+    </div>
+    <div class="moments-controls">
+      <button class="filter-chip ${STATE.momentFilter==='all'?'active':''}" onclick="setMomentFilter('all')">すべて</button>
+      <button class="filter-chip ${STATE.momentFilter==='photo'?'active':''}" onclick="setMomentFilter('photo')">📷 写真</button>
+      <button class="filter-chip ${STATE.momentFilter==='note'?'active':''}" onclick="setMomentFilter('note')">💬 メッセージ</button>
+    </div>
+    ${filtered.length ? grouped.map(g => renderMonthGroup(g)).join('') : `<div class="empty-state"><div>該当する投稿がありません</div></div>`}
+  `;
+}
+
+function filterMoments(){
+  const f = STATE.momentFilter;
+  if(f === 'all') return STATE.moments;
+  if(f === 'kota' || f === 'tokihiko') return STATE.moments.filter(m => m.team === f);
+  return STATE.moments.filter(m => m.type === f);
+}
+
+function setMomentFilter(f){ STATE.momentFilter = f; render(); }
+
+function groupMomentsByMonth(moments){
+  const sorted = [...moments].sort((a,b) => (new Date(b.date||b.createdAt) - new Date(a.date||a.createdAt)));
+  const groups = {};
+  sorted.forEach(m => {
+    const d = new Date(m.date || m.createdAt);
+    const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    if(!groups[key]) groups[key] = {year:d.getFullYear(), month:d.getMonth()+1, items:[]};
+    groups[key].items.push(m);
+  });
+  return Object.values(groups).sort((a,b) => (b.year*100+b.month) - (a.year*100+a.month));
+}
+
+function renderMonthGroup(group){
+  return `
+    <div class="month-section">
+      <div class="month-header">
+        <h3>${group.year}年${group.month}月</h3>
+        <span class="month-count">${group.items.length}件の投稿</span>
+      </div>
+      <div class="moments-grid">${group.items.map(m => renderMomentCard(m)).join('')}</div>
+    </div>
+  `;
+}
+
+function renderMomentCard(m){
+  const dateStr = m.date ? fmtDateShort(m.date) : '';
+  const byStr = m.createdBy || teamLabel(m.team);
+
+  if(m.type === 'note'){
+    return `
+      <div class="moment-card note-only ${m.team}" onclick="openMomentModal('${m.id}')" style="grid-row:span 18">
+        <div class="moment-body">
+          <div class="moment-title">${escapeHtml(m.title || 'メッセージ')}</div>
+          ${m.description?`<div class="moment-desc" style="-webkit-line-clamp:10">${escapeHtml(m.description)}</div>`:''}
+          <div class="moment-meta">
+            <span class="by">${escapeHtml(byStr)}</span>
+            <span>${dateStr}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // photo
+  const teamName = m.team === 'kota' ? 'こうた家' : '父家';
+  const aspectClass = ['','tall','wide'][Math.abs(hashStr(m.id))%3];
+  const mediaHtml = `
+    <div class="moment-media ${aspectClass}">
+      <img src="${escapeHtml(m.mediaUrl)}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='<div style=\\'width:100%;height:100%;background:var(--cream-2);display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-size:14px\\'>画像エラー</div>'">
+      <div class="team-label-badge ${m.team}">${teamName}</div>
+    </div>
+  `;
+
+  const span = aspectClass === 'tall' ? 32 : aspectClass === 'wide' ? 24 : 28;
+
+  return `
+    <div class="moment-card ${m.team}" onclick="openMomentLightbox('${m.id}')" style="grid-row:span ${span}">
+      ${mediaHtml}
+      <div class="moment-body">
+        ${m.title?`<div class="moment-title">${escapeHtml(m.title)}</div>`:''}
+        ${m.description?`<div class="moment-desc">${escapeHtml(m.description)}</div>`:''}
+        <div class="moment-meta">
+          <span class="by">${escapeHtml(byStr)}</span>
+          <span>${dateStr}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function hashStr(s){ let h=0; for(let i=0;i<s.length;i++) h=((h<<5)-h+s.charCodeAt(i))|0; return h; }
+
+function openMomentLightbox(momentId){
+  const m = STATE.moments.find(x => x.id === momentId);
+  if(!m) return;
+
+  const mediaHtml = `<img src="${escapeHtml(m.mediaUrl)}" alt="">`;
+
+  const teamColor = m.team === 'kota' ? '#1565c0' : '#d84315';
+  const teamName = m.team === 'kota' ? 'こうた家' : '父家';
+
+  const root = document.getElementById('lightboxRoot');
+  root.innerHTML = `
+    <div class="lightbox" onclick="if(event.target===this)closeLightbox()">
+      <button class="close" onclick="closeLightbox()">×</button>
+      <div class="media-wrap">${mediaHtml}</div>
+      <div class="lb-info">
+        ${m.title?`<h4>${escapeHtml(m.title)}</h4>`:''}
+        ${m.description?`<p>${escapeHtml(m.description)}</p>`:''}
+        <p class="by-line">
+          <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${teamColor};margin-right:6px;vertical-align:middle"></span>
+          ${teamName} / ${escapeHtml(m.createdBy || '')} / ${m.date ? fmtDateLong(m.date) : ''}
+        </p>
+        <div style="margin-top:16px;display:flex;gap:8px;justify-content:center">
+          <button class="btn ghost small" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4);color:#fff" onclick="closeLightbox();openMomentModal('${m.id}')">編集</button>
+          <button class="btn danger small" onclick="closeLightbox();confirmDeleteMoment('${m.id}')">削除</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function closeLightbox(){ document.getElementById('lightboxRoot').innerHTML = ''; }
+
+/* ========================================================================
+   NAVIGATION
+   ======================================================================== */
+function openTrip(id){ STATE.view='detail'; STATE.currentTripId=id; DETAIL_TAB='overview'; render(); window.scrollTo(0,0); }
+function backToList(){ STATE.view='list'; STATE.currentTripId=null; render(); }
+function setTab(t){ DETAIL_TAB=t; render(); }
+
+/* ========================================================================
+   MODALS
+   ======================================================================== */
+function closeModal(){ document.getElementById('modalRoot').innerHTML = ''; }
+
+function openTeamSelect(){
+  const root = document.getElementById('modalRoot');
+  root.innerHTML = `
+    <div class="modal-backdrop" onclick="if(event.target===this && '${STATE.currentTeam||''}')closeModal()">
+      <div class="modal">
+        <h3>あなたはどちらの家族ですか？</h3>
+        <div class="modal-sub">投稿するときに家族名が表示されます</div>
+        <div class="team-choice">
+          <label onclick="pickTeam('kota')">
+            <input type="radio" name="team" value="kota" ${STATE.currentTeam==='kota'?'checked':''}>
+            <span class="label-inner k"><span class="team-label-name">こうた家</span><span class="team-label-sub">私・妻・子供2人</span></span>
+          </label>
+          <label onclick="pickTeam('tokihiko')">
+            <input type="radio" name="team" value="tokihiko" ${STATE.currentTeam==='tokihiko'?'checked':''}>
+            <span class="label-inner t"><span class="team-label-name">父家</span><span class="team-label-sub">父・彼女2人</span></span>
+          </label>
+        </div>
+        <div class="form-row">
+          <label>お名前（任意）</label>
+          <input id="memberNameInput" type="text" value="${escapeHtml(STATE.memberName)}" placeholder="例: こうた / 父 / 妻">
+          <div class="hint">投稿者名として表示されます</div>
+        </div>
+        <div class="modal-actions"><button class="btn" onclick="saveTeam()">決定</button></div>
+      </div>
+    </div>
+  `;
+}
+function pickTeam(t){ document.querySelectorAll('.team-choice input').forEach(i=>i.checked=(i.value===t)); STATE.currentTeam=t; }
+function saveTeam(){
+  const t = document.querySelector('.team-choice input:checked');
+  const team = t ? t.value : STATE.currentTeam;
+  if(!team){ toast('家族を選択してください'); return; }
+  STATE.currentTeam = team;
+  STATE.memberName = (document.getElementById('memberNameInput').value||'').trim();
+  localStorage.setItem('ft_team', team);
+  localStorage.setItem('ft_member', STATE.memberName);
+  closeModal(); render(); toast('設定を保存しました');
+}
+
+function openTripModal(editId){
+  const existing = editId ? STATE.trips.find(t=>t.id===editId) : null;
+  document.getElementById('modalRoot').innerHTML = `
+    <div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <h3>${existing?'旅行を編集':'新しい旅行'}</h3>
+        <div class="modal-sub">行き先と両家族の日程を入れてください</div>
+        <div class="form-row"><label>行き先 <span class="req">*</span></label><input id="f_dest" type="text" value="${escapeHtml(existing?.destination||'')}" placeholder="例: 沖縄、ハワイ、バンコク"></div>
+        <div class="form-row"><label>サブタイトル（任意）</label><input id="f_destSub" type="text" value="${escapeHtml(existing?.destSub||'')}" placeholder="例: 家族旅行・年末"></div>
+        <div class="form-grid-2">
+          <div class="form-row"><label><span style="color:var(--kota)">●</span> こうた家 出発日</label><input id="f_kotaStart" type="date" value="${existing?.kotaStart||''}"></div>
+          <div class="form-row"><label><span style="color:var(--kota)">●</span> こうた家 帰宅日</label><input id="f_kotaEnd" type="date" value="${existing?.kotaEnd||''}"></div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row"><label><span style="color:var(--tokihiko)">●</span> 父家 出発日</label><input id="f_tokihikoStart" type="date" value="${existing?.tokihikoStart||''}"></div>
+          <div class="form-row"><label><span style="color:var(--tokihiko)">●</span> 父家 帰宅日</label><input id="f_tokihikoEnd" type="date" value="${existing?.tokihikoEnd||''}"></div>
+        </div>
+        <div class="form-row"><label>メモ（任意）</label><textarea id="f_notes" placeholder="旅行の目的や共有事項など">${escapeHtml(existing?.notes||'')}</textarea></div>
+        <div class="modal-actions">
+          <button class="btn ghost" onclick="closeModal()">キャンセル</button>
+          <button class="btn" onclick="saveTrip('${editId||''}')">${existing?'保存':'追加'}</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function saveTrip(editId){
+  const dest = document.getElementById('f_dest').value.trim();
+  if(!dest){ toast('行き先を入力してください'); return; }
+  const trip = editId ? STATE.trips.find(t=>t.id===editId) : { id:uid(), items:[], createdAt:Date.now() };
+  trip.destination = dest;
+  trip.destSub = document.getElementById('f_destSub').value.trim();
+  trip.kotaStart = document.getElementById('f_kotaStart').value;
+  trip.kotaEnd = document.getElementById('f_kotaEnd').value;
+  trip.tokihikoStart = document.getElementById('f_tokihikoStart').value;
+  trip.tokihikoEnd = document.getElementById('f_tokihikoEnd').value;
+  trip.notes = document.getElementById('f_notes').value.trim();
+  if(!editId) STATE.trips.unshift(trip);
+  await syncTrip(trip);
+  saveData(); closeModal(); render();
+  toast(editId?'更新しました':'旅行を追加しました');
+}
+
+async function confirmDeleteTrip(id){
+  if(!confirm('この旅行を削除しますか？\nすべての項目も一緒に削除されます。')) return;
+  await deleteTrip(id);
+  STATE.trips = STATE.trips.filter(t=>t.id!==id);
+  saveData(); backToList(); toast('削除しました');
+}
+
+/* ----- ITEM MODAL ----- */
+function openItemModal(type, editId){
+  const trip = STATE.trips.find(t=>t.id===STATE.currentTripId);
+  if(!trip) return;
+  const existing = editId ? (trip.items||[]).find(i=>i.id===editId) : null;
+  const team = existing ? existing.team : STATE.currentTeam;
+  const typeMap = {flight:'飛行機',hotel:'宿泊',car:'レンタカー',photo:'写真',rec:'おすすめ・メモ'};
+  const f = existing?.fields || {};
+  let formFields = '';
+
+  if(type === 'flight'){
+    formFields = `
+      <div class="form-row"><label>タイトル <span class="req">*</span></label><input id="i_title" type="text" value="${escapeHtml(existing?.title||'')}" placeholder="例: 関空→那覇 往路"></div>
+      <div class="form-grid-2">
+        <div class="form-row"><label>航空会社</label><input id="i_airline" type="text" value="${escapeHtml(f.airline||'')}" placeholder="ANA、JAL..."></div>
+        <div class="form-row"><label>便名</label><input id="i_flightNo" type="text" value="${escapeHtml(f.flightNo||'')}" placeholder="NH1731"></div>
+      </div>
+      <div class="form-row"><label>日付</label><input id="i_date" type="date" value="${f.date||''}"></div>
+      <div class="form-grid-2">
+        <div class="form-row"><label>出発</label><input id="i_depart" type="text" value="${escapeHtml(f.depart||'')}" placeholder="関空 09:20"></div>
+        <div class="form-row"><label>到着</label><input id="i_arrive" type="text" value="${escapeHtml(f.arrive||'')}" placeholder="那覇 11:35"></div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-row"><label>予約サイト名</label><input id="i_bookingSite" type="text" value="${escapeHtml(f.bookingSite||'')}" placeholder="ANA公式、Trip.com..."></div>
+        <div class="form-row"><label>予約サイトURL</label><input id="i_bookingUrl" type="url" value="${escapeHtml(f.bookingUrl||'')}" placeholder="https://..."></div>
+      </div>
+    `;
+  } else if(type === 'hotel'){
+    formFields = `
+      <div class="form-row"><label>ホテル名 <span class="req">*</span></label><input id="i_title" type="text" value="${escapeHtml(existing?.title||'')}" placeholder="例: ザ・ブセナテラス"></div>
+      <div class="form-row"><label>住所</label><input id="i_address" type="text" value="${escapeHtml(f.address||'')}" placeholder="住所 または Google Mapのリンク"></div>
+      <div class="form-grid-2">
+        <div class="form-row"><label>チェックイン</label><input id="i_checkin" type="date" value="${f.checkin||''}"></div>
+        <div class="form-row"><label>チェックアウト</label><input id="i_checkout" type="date" value="${f.checkout||''}"></div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-row"><label>予約サイト名</label><input id="i_bookingSite" type="text" value="${escapeHtml(f.bookingSite||'')}" placeholder="楽天トラベル、じゃらん..."></div>
+        <div class="form-row"><label>予約サイトURL</label><input id="i_bookingUrl" type="url" value="${escapeHtml(f.bookingUrl||'')}" placeholder="https://..."></div>
+      </div>
+    `;
+  } else if(type === 'car'){
+    formFields = `
+      <div class="form-row"><label>タイトル <span class="req">*</span></label><input id="i_title" type="text" value="${escapeHtml(existing?.title||'')}" placeholder="例: トヨタレンタカー 5人乗り"></div>
+      <div class="form-row"><label>レンタカー会社</label><input id="i_company" type="text" value="${escapeHtml(f.company||'')}" placeholder="トヨタ、ニッポン、OTS..."></div>
+      <div class="form-grid-2">
+        <div class="form-row"><label>受取場所</label><input id="i_pickup" type="text" value="${escapeHtml(f.pickup||'')}" placeholder="那覇空港営業所"></div>
+        <div class="form-row"><label>返却場所</label><input id="i_return" type="text" value="${escapeHtml(f.return||'')}" placeholder="同上"></div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-row"><label>受取日</label><input id="i_pickupDate" type="date" value="${f.pickupDate||''}"></div>
+        <div class="form-row"><label>返却日</label><input id="i_returnDate" type="date" value="${f.returnDate||''}"></div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-row"><label>予約サイト名</label><input id="i_bookingSite" type="text" value="${escapeHtml(f.bookingSite||'')}"></div>
+        <div class="form-row"><label>予約サイトURL</label><input id="i_bookingUrl" type="url" value="${escapeHtml(f.bookingUrl||'')}" placeholder="https://..."></div>
+      </div>
+    `;
+  } else if(type === 'photo'){
+    formFields = `
+      <div class="form-row"><label>キャプション</label><input id="i_title" type="text" value="${escapeHtml(existing?.title||'')}" placeholder="例: ビーチでの夕焼け"></div>
+      <div class="form-row">
+        <label>写真 <span class="req">*</span></label>
+        ${renderPhotoUploadField('i', f.url)}
+      </div>
+    `;
+  } else if(type === 'rec'){
+    formFields = `
+      <div class="form-row"><label>タイトル <span class="req">*</span></label><input id="i_title" type="text" value="${escapeHtml(existing?.title||'')}" placeholder="例: 国際通りの絶品居酒屋"></div>
+      <div class="form-grid-2">
+        <div class="form-row"><label>種類</label>
+          <select id="i_category">
+            <option value="">-- 選択 --</option>
+            ${['レストラン','観光','アクティビティ','お土産','カフェ','豆知識','交通','その他'].map(c=>`<option value="${c}" ${f.category===c?'selected':''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-row"><label>場所</label><input id="i_area" type="text" value="${escapeHtml(f.area||'')}" placeholder="那覇市、恩納村..."></div>
+      </div>
+      <div class="form-row"><label>リンク（任意）</label><input id="i_url" type="url" value="${escapeHtml(f.url||'')}" placeholder="https://..."></div>
+    `;
+  }
+
+  document.getElementById('modalRoot').innerHTML = `
+    <div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <h3>${iconFor(type)} ${existing?'編集':'追加'}：${typeMap[type]}</h3>
+        <div class="modal-sub">${existing?teamLabel(team)+'の投稿':teamLabel(STATE.currentTeam)+'として投稿'}</div>
+        ${formFields}
+        <div class="form-row"><label>メモ・おすすめポイント</label><textarea id="i_notes" placeholder="感想、お得情報、注意点など">${escapeHtml(existing?.notes||'')}</textarea></div>
+        <div class="modal-actions">
+          <button class="btn ghost" onclick="closeModal()">キャンセル</button>
+          <button class="btn ${team}" onclick="saveItem('${type}','${editId||''}')">${existing?'保存':'追加'}</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function saveItem(type, editId){
+  const trip = STATE.trips.find(t=>t.id===STATE.currentTripId);
+  if(!trip) return;
+  const title = document.getElementById('i_title').value.trim();
+  if(!title && type!=='photo'){ toast('タイトルを入力してください'); return; }
+
+  const getV = id => { const el=document.getElementById(id); return el?el.value.trim():''; };
+  let fields = {};
+  if(type==='flight') fields = {airline:getV('i_airline'),flightNo:getV('i_flightNo'),date:getV('i_date'),depart:getV('i_depart'),arrive:getV('i_arrive'),bookingSite:getV('i_bookingSite'),bookingUrl:getV('i_bookingUrl')};
+  else if(type==='hotel') fields = {address:getV('i_address'),checkin:getV('i_checkin'),checkout:getV('i_checkout'),bookingSite:getV('i_bookingSite'),bookingUrl:getV('i_bookingUrl')};
+  else if(type==='car') fields = {company:getV('i_company'),pickup:getV('i_pickup'),return:getV('i_return'),pickupDate:getV('i_pickupDate'),returnDate:getV('i_returnDate'),bookingSite:getV('i_bookingSite'),bookingUrl:getV('i_bookingUrl')};
+  else if(type==='photo'){
+    const photoUrl = getV('i_hiddenUrl');
+    if(!photoUrl){ toast('写真を選んでください'); return; }
+    fields = {url:photoUrl};
+  }
+  else if(type==='rec') fields = {category:getV('i_category'),area:getV('i_area'),url:getV('i_url')};
+
+  if(!trip.items) trip.items = [];
+  if(editId){
+    const item = trip.items.find(i=>i.id===editId);
+    if(item){ item.title=title; item.fields=fields; item.notes=getV('i_notes'); }
+  } else {
+    trip.items.push({ id:uid(), type, team:STATE.currentTeam, title, fields, notes:getV('i_notes'),
+      createdAt:Date.now(), createdBy:STATE.memberName||teamLabel(STATE.currentTeam) });
+  }
+  try {
+    await syncTrip(trip);
+    saveData(); closeModal(); render();
+    toast(editId?'更新しました':'追加しました');
+  } catch(err) {
+    if(err.name === 'QuotaExceededError' || String(err).includes('quota')){
+      toast('保存容量がいっぱいです。古い写真を削除してください');
+    } else {
+      toast('保存に失敗しました');
+    }
+  }
+}
+
+async function confirmDeleteItem(itemId){
+  const trip = STATE.trips.find(t=>t.id===STATE.currentTripId);
+  if(!trip) return;
+  if(!confirm('この項目を削除しますか？')) return;
+  trip.items = (trip.items||[]).filter(i=>i.id!==itemId);
+  await syncTrip(trip);
+  saveData(); render(); toast('削除しました');
+}
+
+/* ----- MOMENT MODAL ----- */
+function openMomentModal(editId){
+  const existing = editId ? STATE.moments.find(m=>m.id===editId) : null;
+  const team = existing ? existing.team : STATE.currentTeam;
+  const today = new Date().toISOString().split('T')[0];
+
+  document.getElementById('modalRoot').innerHTML = `
+    <div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <h3>${existing?'投稿を編集':'新しい投稿'}</h3>
+        <div class="modal-sub">${existing?teamLabel(team)+'の投稿':teamLabel(STATE.currentTeam)+'として投稿'}</div>
+
+        <div class="form-row">
+          <label>種類</label>
+          <div class="type-choice" id="typeChoice">
+            <label>
+              <input type="radio" name="mtype" value="photo" ${(!existing||existing.type==='photo')?'checked':''} onchange="updateMomentFields()">
+              <span class="tc-inner"><span class="tc-icon">📷</span><span class="tc-name">写真</span></span>
+            </label>
+            <label>
+              <input type="radio" name="mtype" value="note" ${existing?.type==='note'?'checked':''} onchange="updateMomentFields()">
+              <span class="tc-inner"><span class="tc-icon">💬</span><span class="tc-name">メッセージ</span></span>
+            </label>
+          </div>
+        </div>
+
+        <div id="momentFields"></div>
+
+        <div class="form-row">
+          <label>タイトル</label>
+          <input id="m_title" type="text" value="${escapeHtml(existing?.title||'')}" placeholder="例: 週末のピクニック">
+        </div>
+        <div class="form-row">
+          <label>メッセージ・説明</label>
+          <textarea id="m_desc" placeholder="一言コメント、出来事、感想など">${escapeHtml(existing?.description||'')}</textarea>
+        </div>
+        <div class="form-row">
+          <label>日付</label>
+          <input id="m_date" type="date" value="${existing?.date || today}">
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn ghost" onclick="closeModal()">キャンセル</button>
+          <button class="btn ${team}" onclick="saveMoment('${editId||''}')">${existing?'保存':'投稿'}</button>
+        </div>
+      </div>
+    </div>
+  `;
+  window._editingMomentUrl = existing?.mediaUrl || '';
+  updateMomentFields();
+}
+
+function updateMomentFields(){
+  const type = document.querySelector('input[name="mtype"]:checked').value;
+  const fields = document.getElementById('momentFields');
+  const savedUrl = window._editingMomentUrl || '';
+
+  if(type === 'photo'){
+    fields.innerHTML = `
+      <div class="form-row">
+        <label>写真 <span class="req">*</span></label>
+        ${renderPhotoUploadField('m', savedUrl)}
+      </div>
+    `;
+  } else {
+    fields.innerHTML = `<div class="hint" style="margin-bottom:14px;padding:12px 14px;background:var(--cream);border-radius:8px;font-size:13px;color:var(--ink);line-height:1.6">💬 文字だけの投稿です。下の「メッセージ・説明」欄に近況を書いてください。</div>`;
+  }
+}
+
+async function saveMoment(editId){
+  const type = document.querySelector('input[name="mtype"]:checked').value;
+  const title = document.getElementById('m_title').value.trim();
+  const desc = document.getElementById('m_desc').value.trim();
+  const date = document.getElementById('m_date').value;
+
+  let mediaUrl = '';
+  if(type === 'photo'){
+    const hiddenEl = document.getElementById('m_hiddenUrl');
+    mediaUrl = hiddenEl ? hiddenEl.value.trim() : '';
+    if(!mediaUrl){ toast('写真を選んでください'); return; }
+  }
+
+  if(type === 'note' && !title && !desc){
+    toast('タイトルまたはメッセージを入力してください');
+    return;
+  }
+
+  let m;
+  if(editId){
+    m = STATE.moments.find(x=>x.id===editId);
+    if(!m) return;
+  } else {
+    m = { id:uid(), team:STATE.currentTeam, createdAt:Date.now(),
+      createdBy: STATE.memberName || teamLabel(STATE.currentTeam) };
+    STATE.moments.unshift(m);
+  }
+  m.type = type;
+  m.title = title;
+  m.description = desc;
+  m.date = date;
+  m.mediaUrl = mediaUrl;
+
+  try {
+    await syncMoment(m);
+    saveMomentsData();
+    closeModal(); render();
+    toast(editId?'更新しました':'投稿しました');
+  } catch(err) {
+    if(err.name === 'QuotaExceededError' || String(err).includes('quota')){
+      toast('保存容量がいっぱいです。古い投稿を削除してください');
+    } else {
+      toast('保存に失敗しました');
+    }
+  }
+}
+
+async function confirmDeleteMoment(mid){
+  if(!confirm('この投稿を削除しますか？')) return;
+  await deleteMomentFB(mid);
+  STATE.moments = STATE.moments.filter(m=>m.id!==mid);
+  saveMomentsData(); render(); toast('削除しました');
+}
+
+/* ========================================================================
+   LIGHTBOX (for trip photos)
+   ======================================================================== */
+function openLightbox(url, type, title, notes){
+  const root = document.getElementById('lightboxRoot');
+  root.innerHTML = `
+    <div class="lightbox" onclick="if(event.target===this)closeLightbox()">
+      <button class="close" onclick="closeLightbox()">×</button>
+      <div class="media-wrap"><img src="${escapeHtml(url)}" alt=""></div>
+      ${title||notes ? `<div class="lb-info">${title?`<h4>${escapeHtml(title)}</h4>`:''}${notes?`<p>${escapeHtml(notes)}</p>`:''}</div>` : ''}
+    </div>
+  `;
+}
+
+/* ========================================================================
+   INIT
+   ======================================================================== */
+(async function init(){
+  if(USE_FIREBASE) await initFirebase();
+  else loadData();
+  render();
+})();
+</script>
+</body>
+</html>
