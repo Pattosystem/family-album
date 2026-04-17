@@ -341,38 +341,43 @@
 
   /* ============ PHOTO UPLOAD ============ */
   .photo-upload-wrap{margin-bottom:4px}
+  .photos-preview-grid{
+    display:none;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));
+    gap:8px;margin-bottom:12px;
+  }
+  .photo-preview-item{
+    position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;
+    background:var(--cream);border:2px solid var(--line-soft);
+  }
+  .photo-preview-item img{width:100%;height:100%;object-fit:cover;display:block}
+  .photo-remove-mini{
+    position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;
+    background:rgba(0,0,0,.75);color:#fff;font-size:16px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 2px 6px rgba(0,0,0,.4);cursor:pointer;border:none;
+  }
+  .photo-remove-mini:hover{background:rgba(0,0,0,.9)}
+  .photo-size-mini{
+    position:absolute;bottom:3px;left:3px;background:rgba(0,0,0,.7);
+    color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:500;
+  }
+
   .photo-picker-btn{
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
-    padding:32px 20px;background:var(--cream);
+    padding:28px 20px;background:var(--cream);
     border:3px dashed var(--line);border-radius:12px;
     cursor:pointer;transition:all .15s;text-align:center;
   }
   .photo-picker-btn:hover{background:var(--cream-2);border-color:var(--gold)}
   .photo-picker-btn:active{transform:scale(.99)}
-  .photo-picker-btn .ppb-icon{font-size:44px;line-height:1}
-  .photo-picker-btn .ppb-text{font-size:18px;font-weight:700;color:var(--ink)}
-  .photo-picker-btn .ppb-sub{font-size:13px;color:var(--ink-soft)}
+  .photo-picker-btn .ppb-icon{font-size:40px;line-height:1}
+  .photo-picker-btn .ppb-text{font-size:17px;font-weight:700;color:var(--ink)}
+  .photo-picker-btn .ppb-sub{font-size:12px;color:var(--ink-soft)}
   .photo-picker-btn.compressing{opacity:.6;pointer-events:none}
   .photo-picker-btn.compressing .ppb-text::after{content:" 処理中..."}
-
-  .photo-preview-area{
-    position:relative;border:2px solid var(--line);border-radius:12px;
-    overflow:hidden;background:var(--cream);margin-bottom:10px;
-  }
-  .photo-preview-area img{width:100%;max-height:300px;object-fit:contain;display:block;background:#000}
-  .photo-remove{
-    position:absolute;top:10px;right:10px;
-    width:40px;height:40px;border-radius:50%;
-    background:rgba(0,0,0,.75);color:#fff;font-size:22px;
-    display:flex;align-items:center;justify-content:center;font-weight:700;
-    box-shadow:0 2px 8px rgba(0,0,0,.3);
-  }
-  .photo-remove:hover{background:rgba(0,0,0,.9)}
-  .photo-size-info{
-    position:absolute;bottom:10px;left:10px;
-    background:rgba(0,0,0,.7);color:#fff;padding:4px 10px;
-    border-radius:6px;font-size:12px;font-weight:500;
-  }
+  .photo-picker-btn.add-more{padding:16px 20px}
+  .photo-picker-btn.add-more .ppb-icon{font-size:28px}
+  .photo-picker-btn.add-more .ppb-text{font-size:14px}
 
   .url-fallback{margin-top:12px;border-top:1px dashed var(--line-soft);padding-top:12px}
   .url-fallback summary{
@@ -384,6 +389,39 @@
   .url-fallback[open] summary::before{transform:rotate(90deg)}
   .url-fallback summary:hover{color:var(--ink)}
   .url-fallback input{margin-top:8px}
+
+  /* album badge on moment cards */
+  .album-badge{
+    position:absolute;top:10px;left:10px;
+    background:rgba(0,0,0,.75);color:#fff;
+    padding:5px 11px;border-radius:8px;
+    font-size:12px;font-weight:700;
+    display:flex;align-items:center;gap:4px;
+    box-shadow:0 2px 4px rgba(0,0,0,.3);
+  }
+
+  /* lightbox navigation */
+  .lightbox-nav{
+    position:absolute;top:50%;transform:translateY(-50%);
+    width:56px;height:56px;border-radius:50%;
+    background:rgba(255,255,255,.15);color:#fff;font-size:26px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+    border:none;cursor:pointer;z-index:10;
+  }
+  .lightbox-nav:hover{background:rgba(255,255,255,.28)}
+  .lightbox-nav.prev{left:20px}
+  .lightbox-nav.next{right:20px}
+  .lightbox-nav:disabled{opacity:.3;cursor:not-allowed}
+  .lightbox-counter{
+    position:absolute;top:24px;left:50%;transform:translateX(-50%);
+    background:rgba(0,0,0,.6);color:#fff;
+    padding:6px 16px;border-radius:999px;font-size:14px;font-weight:600;
+  }
+  @media(max-width:640px){
+    .lightbox-nav{width:44px;height:44px;font-size:22px}
+    .lightbox-nav.prev{left:10px}
+    .lightbox-nav.next{right:10px}
+  }
 
   /* ============ SETUP BANNER ============ */
   .setup-banner{background:linear-gradient(135deg,#fff8e7 0%,#fef3d8 100%);border:2px solid #e8d598;border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:14px;color:#6b5420;display:flex;align-items:center;gap:10px;flex-wrap:wrap;line-height:1.6}
@@ -458,13 +496,13 @@
    FIREBASE 設定 — 複数端末で共有する場合はここに設定を入力
    ======================================================================== */
 const FIREBASE_CONFIG = {
-  // apiKey: "YOUR_API_KEY",
-  // authDomain: "your-project.firebaseapp.com",
-  // databaseURL: "https://your-project-default-rtdb.firebaseio.com",
-  // projectId: "your-project",
-  // storageBucket: "your-project.appspot.com",
-  // messagingSenderId: "...",
-  // appId: "..."
+  apiKey: "AIzaSyAuZNI_oefXjubzQv4toKhl3Nff6zvCZDM",
+  authDomain: "family-hiroba-ea4f4.firebaseapp.com",
+  databaseURL: "https://family-hiroba-ea4f4-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "family-hiroba-ea4f4",
+  storageBucket: "family-hiroba-ea4f4.firebasestorage.app",
+  messagingSenderId: "1035200065917",
+  appId: "1:1035200065917:web:20e74de2457aca8edcdc14"
 };
 const USE_FIREBASE = !!FIREBASE_CONFIG.apiKey;
 
@@ -523,21 +561,23 @@ function seedTrips(){
 function seedMoments(){
   const now = Date.now();
   return [
-    {id:'m1',type:'photo',team:'kota',title:'週末のピクニック',
-     mediaUrl:'https://images.unsplash.com/photo-1526401485004-46910ecc8e51?w=800',
-     description:'子供たちと近所の公園へ行きました。桜がまだ少し残ってました。',
-     date:'2026-04-12',createdAt:now-86400000*5,createdBy:'KOTA'},
+    {id:'m4',type:'photo',team:'kota',title:'娘の入学式',
+     mediaUrls:[
+       'https://images.unsplash.com/photo-1491013516836-7db643ee125a?w=800',
+       'https://images.unsplash.com/photo-1526401485004-46910ecc8e51?w=800',
+       'https://images.unsplash.com/photo-1587691592099-24045742c181?w=800',
+     ],
+     mediaUrl:'https://images.unsplash.com/photo-1491013516836-7db643ee125a?w=800',
+     description:'無事に小学校に入学しました。あっという間です。3枚のアルバム例。',
+     date:'2026-04-06',createdAt:now-86400000*11,createdBy:'KOTA'},
     {id:'m2',type:'note',team:'tokihiko',title:'今週の近況',
      description:'先週は京都に一泊してきました。祇園の桜が見事で、来年はみんなで行きたいですね。\n写真は別途送ります。',
      date:'2026-04-10',createdAt:now-86400000*7,createdBy:'TOKIHIKO'},
     {id:'m3',type:'photo',team:'tokihiko',title:'朝の散歩',
+     mediaUrls:['https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800'],
      mediaUrl:'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800',
      description:'湖畔の朝。空気が澄んでて気持ちよかった。',
      date:'2026-04-08',createdAt:now-86400000*9,createdBy:'TOKIHIKO'},
-    {id:'m4',type:'photo',team:'kota',title:'娘の入学式',
-     mediaUrl:'https://images.unsplash.com/photo-1491013516836-7db643ee125a?w=800',
-     description:'無事に小学校に入学しました。あっという間です。',
-     date:'2026-04-06',createdAt:now-86400000*11,createdBy:'KOTA'},
   ];
 }
 
@@ -645,73 +685,101 @@ function formatSize(bytes){
   return (bytes/1024/1024).toFixed(1) + 'MB';
 }
 
-async function handlePhotoFile(inputEl, previewAreaId, previewImgId, hiddenUrlId, sizeInfoId, pickerBtnId){
-  const file = inputEl.files[0];
-  if(!file) return;
-  if(!file.type.startsWith('image/')){ toast('画像ファイルを選んでください'); return; }
-  const pickerBtn = document.getElementById(pickerBtnId);
+async function handlePhotoFiles(inputEl, prefix){
+  const files = Array.from(inputEl.files);
+  if(!files.length) return;
+  const pickerBtn = document.getElementById(prefix + '_pickerBtn');
+  const addMoreBtn = document.getElementById(prefix + '_addMoreBtn');
   if(pickerBtn) pickerBtn.classList.add('compressing');
-  try {
-    const dataUrl = await compressImage(file);
-    document.getElementById(hiddenUrlId).value = dataUrl;
-    document.getElementById(previewImgId).src = dataUrl;
-    document.getElementById(previewAreaId).style.display = 'block';
-    if(pickerBtn) pickerBtn.style.display = 'none';
-    const size = estimateDataUrlSize(dataUrl);
-    const sizeInfo = document.getElementById(sizeInfoId);
-    if(sizeInfo) sizeInfo.textContent = '容量: ' + formatSize(size);
-  } catch(err){
-    toast('画像の処理に失敗しました: ' + err.message);
-  } finally {
-    if(pickerBtn) pickerBtn.classList.remove('compressing');
-    inputEl.value = ''; // reset file input
+  if(addMoreBtn) addMoreBtn.classList.add('compressing');
+
+  if(!window['_photos_' + prefix]) window['_photos_' + prefix] = [];
+  let errors = 0;
+  for(const file of files){
+    if(!file.type.startsWith('image/')){ errors++; continue; }
+    try {
+      const dataUrl = await compressImage(file);
+      window['_photos_' + prefix].push(dataUrl);
+      renderPhotosGrid(prefix);
+    } catch(err){
+      errors++;
+    }
   }
+
+  if(pickerBtn) pickerBtn.classList.remove('compressing');
+  if(addMoreBtn) addMoreBtn.classList.remove('compressing');
+  inputEl.value = '';
+  if(errors > 0) toast(errors + '枚の画像を処理できませんでした');
 }
 
-function clearPhotoUpload(previewAreaId, pickerBtnId, hiddenUrlId, urlManualId){
-  document.getElementById(previewAreaId).style.display = 'none';
-  const pickerBtn = document.getElementById(pickerBtnId);
-  if(pickerBtn) pickerBtn.style.display = 'flex';
-  document.getElementById(hiddenUrlId).value = '';
-  const urlManual = document.getElementById(urlManualId);
-  if(urlManual) urlManual.value = '';
+function addPhotoFromUrl(url, prefix){
+  url = (url || '').trim();
+  if(!url) return;
+  if(!window['_photos_' + prefix]) window['_photos_' + prefix] = [];
+  window['_photos_' + prefix].push(url);
+  renderPhotosGrid(prefix);
+  const input = document.getElementById(prefix + '_urlManual');
+  if(input) input.value = '';
 }
 
-function syncUrlToHidden(manualId, hiddenId, previewAreaId, previewImgId, pickerBtnId, sizeInfoId){
-  const url = document.getElementById(manualId).value.trim();
-  document.getElementById(hiddenId).value = url;
-  if(url){
-    document.getElementById(previewImgId).src = url;
-    document.getElementById(previewAreaId).style.display = 'block';
-    document.getElementById(pickerBtnId).style.display = 'none';
-    const sizeInfo = document.getElementById(sizeInfoId);
-    if(sizeInfo) sizeInfo.textContent = '外部URL';
+function removePhotoFromSelection(prefix, index){
+  const photos = window['_photos_' + prefix] || [];
+  photos.splice(index, 1);
+  renderPhotosGrid(prefix);
+}
+
+function renderPhotosGrid(prefix){
+  const photos = window['_photos_' + prefix] || [];
+  const grid = document.getElementById(prefix + '_photosGrid');
+  const pickerBtn = document.getElementById(prefix + '_pickerBtn');
+  const addMoreBtn = document.getElementById(prefix + '_addMoreBtn');
+  if(!grid) return;
+
+  if(photos.length === 0){
+    grid.style.display = 'none';
+    if(pickerBtn) pickerBtn.style.display = 'flex';
+    if(addMoreBtn) addMoreBtn.style.display = 'none';
   } else {
-    document.getElementById(previewAreaId).style.display = 'none';
-    document.getElementById(pickerBtnId).style.display = 'flex';
+    grid.style.display = 'grid';
+    if(pickerBtn) pickerBtn.style.display = 'none';
+    if(addMoreBtn) addMoreBtn.style.display = 'flex';
+    grid.innerHTML = photos.map((url, i) => `
+      <div class="photo-preview-item">
+        <img src="${escapeHtml(url)}" alt="">
+        <button type="button" class="photo-remove-mini" onclick="removePhotoFromSelection('${prefix}', ${i})">×</button>
+        ${url.startsWith('data:') ? `<div class="photo-size-mini">${formatSize(estimateDataUrlSize(url))}</div>` : ''}
+      </div>
+    `).join('');
   }
 }
 
-function renderPhotoUploadField(prefix, existingUrl){
-  const hasExisting = !!existingUrl;
-  const isDataUrl = existingUrl && existingUrl.startsWith('data:');
+function renderPhotoUploadField(prefix, existingUrls){
+  // Accept array or single url for backwards compatibility
+  const urls = Array.isArray(existingUrls) ? existingUrls : (existingUrls ? [existingUrls] : []);
+  window['_photos_' + prefix] = [...urls];
+
+  setTimeout(() => renderPhotosGrid(prefix), 0);
+
   return `
     <div class="photo-upload-wrap">
-      <div class="photo-preview-area" id="${prefix}_previewArea" style="display:${hasExisting?'block':'none'}">
-        <img id="${prefix}_previewImg" src="${hasExisting?escapeHtml(existingUrl):''}">
-        <div class="photo-size-info" id="${prefix}_sizeInfo">${isDataUrl?'容量: '+formatSize(estimateDataUrlSize(existingUrl)):hasExisting?'外部URL':''}</div>
-        <button type="button" class="photo-remove" onclick="clearPhotoUpload('${prefix}_previewArea','${prefix}_pickerBtn','${prefix}_hiddenUrl','${prefix}_urlManual')">×</button>
-      </div>
-      <label class="photo-picker-btn" id="${prefix}_pickerBtn" style="display:${hasExisting?'none':'flex'}">
-        <input type="file" accept="image/*" onchange="handlePhotoFile(this,'${prefix}_previewArea','${prefix}_previewImg','${prefix}_hiddenUrl','${prefix}_sizeInfo','${prefix}_pickerBtn')" hidden>
+      <div id="${prefix}_photosGrid" class="photos-preview-grid"></div>
+      <label class="photo-picker-btn" id="${prefix}_pickerBtn">
+        <input type="file" accept="image/*" multiple onchange="handlePhotoFiles(this,'${prefix}')" hidden>
         <span class="ppb-icon">📷</span>
         <span class="ppb-text">写真を選ぶ</span>
-        <span class="ppb-sub">スマホ・PCから選択</span>
+        <span class="ppb-sub">スマホ・PCから選択（複数枚OK）</span>
       </label>
-      <input type="hidden" id="${prefix}_hiddenUrl" value="${hasExisting?escapeHtml(existingUrl):''}">
-      <details class="url-fallback" ${hasExisting && !isDataUrl ? 'open':''}>
+      <label class="photo-picker-btn add-more" id="${prefix}_addMoreBtn" style="display:none">
+        <input type="file" accept="image/*" multiple onchange="handlePhotoFiles(this,'${prefix}')" hidden>
+        <span class="ppb-icon">➕</span>
+        <span class="ppb-text">さらに写真を追加</span>
+      </label>
+      <details class="url-fallback">
         <summary>画像のURLから追加する場合</summary>
-        <input type="url" id="${prefix}_urlManual" value="${hasExisting && !isDataUrl ? escapeHtml(existingUrl):''}" placeholder="https://..." oninput="syncUrlToHidden('${prefix}_urlManual','${prefix}_hiddenUrl','${prefix}_previewArea','${prefix}_previewImg','${prefix}_pickerBtn','${prefix}_sizeInfo')">
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <input type="url" id="${prefix}_urlManual" placeholder="https://..." style="flex:1">
+          <button type="button" class="btn ghost small" onclick="addPhotoFromUrl(document.getElementById('${prefix}_urlManual').value, '${prefix}')">追加</button>
+        </div>
       </details>
     </div>
   `;
@@ -1083,12 +1151,17 @@ function renderMomentCard(m){
     `;
   }
 
-  // photo
+  // photo (single or album)
+  const urls = (m.mediaUrls && m.mediaUrls.length) ? m.mediaUrls : (m.mediaUrl ? [m.mediaUrl] : []);
+  const firstUrl = urls[0] || '';
+  const count = urls.length;
   const teamName = m.team === 'kota' ? 'KOTA' : 'TOKIHIKO';
   const aspectClass = ['','tall','wide'][Math.abs(hashStr(m.id))%3];
+  const albumBadge = count > 1 ? `<div class="album-badge">📷 ${count}枚</div>` : '';
   const mediaHtml = `
     <div class="moment-media ${aspectClass}">
-      <img src="${escapeHtml(m.mediaUrl)}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='<div style=\\'width:100%;height:100%;background:var(--cream-2);display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-size:14px\\'>画像エラー</div>'">
+      <img src="${escapeHtml(firstUrl)}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='<div style=\\'width:100%;height:100%;background:var(--cream-2);display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-size:14px\\'>画像エラー</div>'">
+      ${albumBadge}
       <div class="team-label-badge ${m.team}">${teamName}</div>
     </div>
   `;
@@ -1112,11 +1185,28 @@ function renderMomentCard(m){
 
 function hashStr(s){ let h=0; for(let i=0;i<s.length;i++) h=((h<<5)-h+s.charCodeAt(i))|0; return h; }
 
-function openMomentLightbox(momentId){
+let LIGHTBOX_STATE = { momentId: null, index: 0 };
+
+function openMomentLightbox(momentId, startIndex){
   const m = STATE.moments.find(x => x.id === momentId);
   if(!m) return;
+  const urls = (m.mediaUrls && m.mediaUrls.length) ? m.mediaUrls : (m.mediaUrl ? [m.mediaUrl] : []);
+  if(!urls.length) return;
 
-  const mediaHtml = `<img src="${escapeHtml(m.mediaUrl)}" alt="">`;
+  LIGHTBOX_STATE = { momentId, index: Math.max(0, Math.min(startIndex||0, urls.length-1)) };
+  renderLightbox();
+}
+
+function renderLightbox(){
+  const m = STATE.moments.find(x => x.id === LIGHTBOX_STATE.momentId);
+  if(!m){ closeLightbox(); return; }
+  const urls = (m.mediaUrls && m.mediaUrls.length) ? m.mediaUrls : (m.mediaUrl ? [m.mediaUrl] : []);
+  if(!urls.length){ closeLightbox(); return; }
+
+  const idx = LIGHTBOX_STATE.index;
+  const total = urls.length;
+  const currentUrl = urls[idx];
+  const isAlbum = total > 1;
 
   const teamColor = m.team === 'kota' ? '#1565c0' : '#d84315';
   const teamName = m.team === 'kota' ? 'KOTA' : 'TOKIHIKO';
@@ -1125,7 +1215,10 @@ function openMomentLightbox(momentId){
   root.innerHTML = `
     <div class="lightbox" onclick="if(event.target===this)closeLightbox()">
       <button class="close" onclick="closeLightbox()">×</button>
-      <div class="media-wrap">${mediaHtml}</div>
+      ${isAlbum ? `<div class="lightbox-counter">${idx+1} / ${total}</div>` : ''}
+      ${isAlbum ? `<button class="lightbox-nav prev" onclick="lightboxPrev()" ${idx===0?'disabled':''}>‹</button>` : ''}
+      ${isAlbum ? `<button class="lightbox-nav next" onclick="lightboxNext()" ${idx===total-1?'disabled':''}>›</button>` : ''}
+      <div class="media-wrap"><img src="${escapeHtml(currentUrl)}" alt=""></div>
       <div class="lb-info">
         ${m.title?`<h4>${escapeHtml(m.title)}</h4>`:''}
         ${m.description?`<p>${escapeHtml(m.description)}</p>`:''}
@@ -1141,6 +1234,24 @@ function openMomentLightbox(momentId){
     </div>
   `;
 }
+
+function lightboxPrev(){
+  if(LIGHTBOX_STATE.index > 0){ LIGHTBOX_STATE.index--; renderLightbox(); }
+}
+function lightboxNext(){
+  const m = STATE.moments.find(x => x.id === LIGHTBOX_STATE.momentId);
+  if(!m) return;
+  const urls = (m.mediaUrls && m.mediaUrls.length) ? m.mediaUrls : (m.mediaUrl ? [m.mediaUrl] : []);
+  if(LIGHTBOX_STATE.index < urls.length - 1){ LIGHTBOX_STATE.index++; renderLightbox(); }
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if(!document.getElementById('lightboxRoot').querySelector('.lightbox')) return;
+  if(e.key === 'ArrowLeft') lightboxPrev();
+  else if(e.key === 'ArrowRight') lightboxNext();
+  else if(e.key === 'Escape') closeLightbox();
+});
 
 function closeLightbox(){ document.getElementById('lightboxRoot').innerHTML = ''; }
 
@@ -1352,15 +1463,54 @@ async function saveItem(type, editId){
   if(!title && type!=='photo'){ toast('タイトルを入力してください'); return; }
 
   const getV = id => { const el=document.getElementById(id); return el?el.value.trim():''; };
+
+  // Photo: handle multi-upload — when adding, create one item per photo
+  if(type === 'photo'){
+    const photoUrls = window._photos_i || [];
+    if(photoUrls.length === 0){ toast('写真を選んでください'); return; }
+
+    if(!trip.items) trip.items = [];
+    const notes = getV('i_notes');
+
+    if(editId){
+      // Edit: replace existing single item's URL with first photo; any additional photos become new items
+      const item = trip.items.find(i=>i.id===editId);
+      if(item){
+        item.title = title;
+        item.fields = {url: photoUrls[0]};
+        item.notes = notes;
+        // Add extras as new items
+        for(let i = 1; i < photoUrls.length; i++){
+          trip.items.push({ id:uid(), type:'photo', team:STATE.currentTeam, title, fields:{url:photoUrls[i]}, notes,
+            createdAt:Date.now()+i, createdBy:STATE.memberName||teamLabel(STATE.currentTeam) });
+        }
+      }
+    } else {
+      // New: create one item per photo
+      for(let i = 0; i < photoUrls.length; i++){
+        trip.items.push({ id:uid(), type:'photo', team:STATE.currentTeam, title, fields:{url:photoUrls[i]}, notes,
+          createdAt:Date.now()+i, createdBy:STATE.memberName||teamLabel(STATE.currentTeam) });
+      }
+    }
+
+    try {
+      await syncTrip(trip);
+      saveData(); closeModal(); render();
+      toast((editId?'更新しました':`${photoUrls.length}枚追加しました`));
+    } catch(err) {
+      if(err.name === 'QuotaExceededError' || String(err).includes('quota')){
+        toast('保存容量がいっぱいです。古い写真を削除してください');
+      } else {
+        toast('保存に失敗しました');
+      }
+    }
+    return;
+  }
+
   let fields = {};
   if(type==='flight') fields = {airline:getV('i_airline'),flightNo:getV('i_flightNo'),date:getV('i_date'),depart:getV('i_depart'),arrive:getV('i_arrive'),bookingSite:getV('i_bookingSite'),bookingUrl:getV('i_bookingUrl')};
   else if(type==='hotel') fields = {address:getV('i_address'),checkin:getV('i_checkin'),checkout:getV('i_checkout'),bookingSite:getV('i_bookingSite'),bookingUrl:getV('i_bookingUrl')};
   else if(type==='car') fields = {company:getV('i_company'),pickup:getV('i_pickup'),return:getV('i_return'),pickupDate:getV('i_pickupDate'),returnDate:getV('i_returnDate'),bookingSite:getV('i_bookingSite'),bookingUrl:getV('i_bookingUrl')};
-  else if(type==='photo'){
-    const photoUrl = getV('i_hiddenUrl');
-    if(!photoUrl){ toast('写真を選んでください'); return; }
-    fields = {url:photoUrl};
-  }
   else if(type==='rec') fields = {category:getV('i_category'),area:getV('i_area'),url:getV('i_url')};
 
   if(!trip.items) trip.items = [];
@@ -1442,7 +1592,7 @@ function openMomentModal(editId){
       </div>
     </div>
   `;
-  window._editingMomentUrl = existing?.mediaUrl || '';
+  window._editingMomentUrl = (existing?.mediaUrls && existing.mediaUrls.length) ? existing.mediaUrls : (existing?.mediaUrl ? [existing.mediaUrl] : []);
   updateMomentFields();
 }
 
@@ -1469,11 +1619,10 @@ async function saveMoment(editId){
   const desc = document.getElementById('m_desc').value.trim();
   const date = document.getElementById('m_date').value;
 
-  let mediaUrl = '';
+  let mediaUrls = [];
   if(type === 'photo'){
-    const hiddenEl = document.getElementById('m_hiddenUrl');
-    mediaUrl = hiddenEl ? hiddenEl.value.trim() : '';
-    if(!mediaUrl){ toast('写真を選んでください'); return; }
+    mediaUrls = window._photos_m || [];
+    if(mediaUrls.length === 0){ toast('写真を選んでください'); return; }
   }
 
   if(type === 'note' && !title && !desc){
@@ -1494,7 +1643,8 @@ async function saveMoment(editId){
   m.title = title;
   m.description = desc;
   m.date = date;
-  m.mediaUrl = mediaUrl;
+  m.mediaUrls = mediaUrls;
+  m.mediaUrl = mediaUrls[0] || '';  // for backwards compat
 
   try {
     await syncMoment(m);
