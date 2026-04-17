@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>家族アルバム</title>
+<title>家族共有ひろば</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -429,7 +429,7 @@
     <div class="brand">
       <div class="brand-mark">家</div>
       <div>
-        <h1>家族アルバム</h1>
+        <h1>家族共有ひろば</h1>
         <span class="brand-sub">みんなで共有</span>
       </div>
     </div>
@@ -508,13 +508,13 @@ function seedTrips(){
     items:[
       {id:'i1',type:'flight',team:'kota',title:'ANA 1731便 関空→那覇',
        fields:{airline:'ANA',flightNo:'NH1731',depart:'関空 09:20',arrive:'那覇 11:35',date:'2026-05-02',bookingSite:'ANA公式',bookingUrl:'https://www.ana.co.jp/'},
-       notes:'早割でかなり安く取れました。おすすめです。',createdAt:Date.now()-86400000*3,createdBy:'こうた'},
+       notes:'早割でかなり安く取れました。おすすめです。',createdAt:Date.now()-86400000*3,createdBy:'KOTA'},
       {id:'i2',type:'hotel',team:'kota',title:'ザ・ブセナテラス',
        fields:{address:'沖縄県名護市喜瀬1808',checkin:'2026-05-02',checkout:'2026-05-06',bookingSite:'楽天トラベル',bookingUrl:'https://travel.rakuten.co.jp/'},
-       notes:'プライベートビーチ付きで家族向けです。',createdAt:Date.now()-86400000*2,createdBy:'こうた'},
+       notes:'プライベートビーチ付きで家族向けです。',createdAt:Date.now()-86400000*2,createdBy:'KOTA'},
       {id:'i3',type:'rec',team:'tokihiko',title:'ゆうなんぎい（沖縄料理）',
        fields:{category:'レストラン',area:'那覇市久茂地'},
-       notes:'地元の方おすすめの老舗。沖縄料理はここがおすすめ。予約した方が良いです。',createdAt:Date.now()-86400000,createdBy:'父'},
+       notes:'地元の方おすすめの老舗。沖縄料理はここがおすすめ。予約した方が良いです。',createdAt:Date.now()-86400000,createdBy:'TOKIHIKO'},
     ],
     createdAt:Date.now()-86400000*5,
   }];
@@ -526,18 +526,18 @@ function seedMoments(){
     {id:'m1',type:'photo',team:'kota',title:'週末のピクニック',
      mediaUrl:'https://images.unsplash.com/photo-1526401485004-46910ecc8e51?w=800',
      description:'子供たちと近所の公園へ行きました。桜がまだ少し残ってました。',
-     date:'2026-04-12',createdAt:now-86400000*5,createdBy:'こうた'},
+     date:'2026-04-12',createdAt:now-86400000*5,createdBy:'KOTA'},
     {id:'m2',type:'note',team:'tokihiko',title:'今週の近況',
      description:'先週は京都に一泊してきました。祇園の桜が見事で、来年はみんなで行きたいですね。\n写真は別途送ります。',
-     date:'2026-04-10',createdAt:now-86400000*7,createdBy:'父'},
+     date:'2026-04-10',createdAt:now-86400000*7,createdBy:'TOKIHIKO'},
     {id:'m3',type:'photo',team:'tokihiko',title:'朝の散歩',
      mediaUrl:'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800',
      description:'湖畔の朝。空気が澄んでて気持ちよかった。',
-     date:'2026-04-08',createdAt:now-86400000*9,createdBy:'父'},
+     date:'2026-04-08',createdAt:now-86400000*9,createdBy:'TOKIHIKO'},
     {id:'m4',type:'photo',team:'kota',title:'娘の入学式',
      mediaUrl:'https://images.unsplash.com/photo-1491013516836-7db643ee125a?w=800',
      description:'無事に小学校に入学しました。あっという間です。',
-     date:'2026-04-06',createdAt:now-86400000*11,createdBy:'妻'},
+     date:'2026-04-06',createdAt:now-86400000*11,createdBy:'KOTA'},
   ];
 }
 
@@ -592,7 +592,7 @@ function fmtDate(s){ if(!s) return ''; const d=new Date(s); if(isNaN(d)) return 
 function fmtDateShort(s){ if(!s) return ''; const d=new Date(s); if(isNaN(d)) return s; return (d.getMonth()+1)+'月'+d.getDate()+'日'; }
 function fmtDateLong(s){ if(!s) return ''; const d=new Date(s); if(isNaN(d)) return s; return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日'; }
 function escapeHtml(str){ if(str==null) return ''; return String(str).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function teamLabel(t){ return t==='kota'?'こうた家':t==='tokihiko'?'父家':'' }
+function teamLabel(t){ return t==='kota'?'KOTA':t==='tokihiko'?'TOKIHIKO':'' }
 function toast(msg){
   const root = document.getElementById('toastRoot');
   root.innerHTML = `<div class="toast">${escapeHtml(msg)}</div>`;
@@ -721,7 +721,6 @@ function renderPhotoUploadField(prefix, existingUrl){
    RENDER
    ======================================================================== */
 function render(){
-  if(!STATE.currentTeam){ openTeamSelect(); }
   updateTeamPill();
   updateNav();
   const main = document.getElementById('main');
@@ -782,12 +781,12 @@ function renderList(){
         <div class="dates-block">
           <div class="date-row">
             <span class="team-dot kota"></span>
-            <span class="team-name kota">こうた家</span>
+            <span class="team-name kota">KOTA</span>
             <span class="date-val ${trip.kotaStart?'':'empty'}">${trip.kotaStart ? fmtDateShort(trip.kotaStart)+' 〜 '+fmtDateShort(trip.kotaEnd||trip.kotaStart) : '未定'}</span>
           </div>
           <div class="date-row">
             <span class="team-dot tokihiko"></span>
-            <span class="team-name tokihiko">父家</span>
+            <span class="team-name tokihiko">TOKIHIKO</span>
             <span class="date-val ${trip.tokihikoStart?'':'empty'}">${trip.tokihikoStart ? fmtDateShort(trip.tokihikoStart)+' 〜 '+fmtDateShort(trip.tokihikoEnd||trip.tokihikoStart) : '未定'}</span>
           </div>
         </div>
@@ -873,8 +872,8 @@ function renderTimeline(trip){
   const widthPct = (s,e) => (((new Date(e)-new Date(s))+86400000)/total)*100;
 
   let kotaBar='', tokihikoBar='', overlapBar='';
-  if(hasK) kotaBar = `<div class="tl-bar kota" style="left:${pct(trip.kotaStart)}%;width:${widthPct(trip.kotaStart,trip.kotaEnd)}%">こうた家</div>`;
-  if(hasT) tokihikoBar = `<div class="tl-bar tokihiko" style="left:${pct(trip.tokihikoStart)}%;width:${widthPct(trip.tokihikoStart,trip.tokihikoEnd)}%">父家</div>`;
+  if(hasK) kotaBar = `<div class="tl-bar kota" style="left:${pct(trip.kotaStart)}%;width:${widthPct(trip.kotaStart,trip.kotaEnd)}%">KOTA</div>`;
+  if(hasT) tokihikoBar = `<div class="tl-bar tokihiko" style="left:${pct(trip.tokihikoStart)}%;width:${widthPct(trip.tokihikoStart,trip.tokihikoEnd)}%">TOKIHIKO</div>`;
   if(hasK && hasT){
     const ovS = new Date(Math.max(new Date(trip.kotaStart), new Date(trip.tokihikoStart)));
     const ovE = new Date(Math.min(new Date(trip.kotaEnd), new Date(trip.tokihikoEnd)));
@@ -907,7 +906,7 @@ function renderTabContent(trip){
         <img src="${escapeHtml(i.fields.url)}" alt="" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 75%22%3E%3Crect width=%22100%22 height=%2275%22 fill=%22%23f0ebe0%22/%3E%3Ctext x=%2250%22 y=%2240%22 text-anchor=%22middle%22 fill=%22%239a8e82%22 font-size=%2212%22%3E画像エラー%3C/text%3E%3C/svg%3E'">
         <div class="photo-overlay">
           <span class="photo-caption">${escapeHtml(i.title || '')}</span>
-          <span class="mini-badge ${i.team}">${i.team==='kota'?'こうた家':'父家'}</span>
+          <span class="mini-badge ${i.team}">${i.team==='kota'?'KOTA':'TOKIHIKO'}</span>
         </div>
       </div>
     `).join('');
@@ -982,7 +981,7 @@ function renderItemCard(item, compact){
           <div class="item-title">${iconFor(item.type)} ${escapeHtml(item.title)}</div>
           <div class="item-meta">${item.createdBy?escapeHtml(item.createdBy)+' / ':''}${item.createdAt?new Date(item.createdAt).toLocaleDateString('ja-JP'):''}</div>
         </div>
-        <span class="team-badge ${item.team}">${item.team==='kota'?'こうた家':'父家'}</span>
+        <span class="team-badge ${item.team}">${item.team==='kota'?'KOTA':'TOKIHIKO'}</span>
       </div>
       ${body?`<div class="item-body">${body}</div>`:''}
       ${item.notes?`<div class="item-body"><div class="notes">${escapeHtml(item.notes)}</div></div>`:''}
@@ -1085,7 +1084,7 @@ function renderMomentCard(m){
   }
 
   // photo
-  const teamName = m.team === 'kota' ? 'こうた家' : '父家';
+  const teamName = m.team === 'kota' ? 'KOTA' : 'TOKIHIKO';
   const aspectClass = ['','tall','wide'][Math.abs(hashStr(m.id))%3];
   const mediaHtml = `
     <div class="moment-media ${aspectClass}">
@@ -1120,7 +1119,7 @@ function openMomentLightbox(momentId){
   const mediaHtml = `<img src="${escapeHtml(m.mediaUrl)}" alt="">`;
 
   const teamColor = m.team === 'kota' ? '#1565c0' : '#d84315';
-  const teamName = m.team === 'kota' ? 'こうた家' : '父家';
+  const teamName = m.team === 'kota' ? 'KOTA' : 'TOKIHIKO';
 
   const root = document.getElementById('lightboxRoot');
   root.innerHTML = `
@@ -1162,21 +1161,21 @@ function openTeamSelect(){
   root.innerHTML = `
     <div class="modal-backdrop" onclick="if(event.target===this && '${STATE.currentTeam||''}')closeModal()">
       <div class="modal">
-        <h3>あなたはどちらの家族ですか？</h3>
-        <div class="modal-sub">投稿するときに家族名が表示されます</div>
+        <h3>あなたはどちらですか？</h3>
+        <div class="modal-sub">投稿するときにお名前が表示されます</div>
         <div class="team-choice">
           <label onclick="pickTeam('kota')">
             <input type="radio" name="team" value="kota" ${STATE.currentTeam==='kota'?'checked':''}>
-            <span class="label-inner k"><span class="team-label-name">こうた家</span><span class="team-label-sub">私・妻・子供2人</span></span>
+            <span class="label-inner k"><span class="team-label-name">KOTA</span></span>
           </label>
           <label onclick="pickTeam('tokihiko')">
             <input type="radio" name="team" value="tokihiko" ${STATE.currentTeam==='tokihiko'?'checked':''}>
-            <span class="label-inner t"><span class="team-label-name">父家</span><span class="team-label-sub">父・彼女2人</span></span>
+            <span class="label-inner t"><span class="team-label-name">TOKIHIKO</span></span>
           </label>
         </div>
         <div class="form-row">
           <label>お名前（任意）</label>
-          <input id="memberNameInput" type="text" value="${escapeHtml(STATE.memberName)}" placeholder="例: こうた / 父 / 妻">
+          <input id="memberNameInput" type="text" value="${escapeHtml(STATE.memberName)}" placeholder="例: KOTA / TOKIHIKO">
           <div class="hint">投稿者名として表示されます</div>
         </div>
         <div class="modal-actions"><button class="btn" onclick="saveTeam()">決定</button></div>
@@ -1188,7 +1187,7 @@ function pickTeam(t){ document.querySelectorAll('.team-choice input').forEach(i=
 function saveTeam(){
   const t = document.querySelector('.team-choice input:checked');
   const team = t ? t.value : STATE.currentTeam;
-  if(!team){ toast('家族を選択してください'); return; }
+  if(!team){ toast('KOTAかTOKIHIKOを選択してください'); return; }
   STATE.currentTeam = team;
   STATE.memberName = (document.getElementById('memberNameInput').value||'').trim();
   localStorage.setItem('ft_team', team);
@@ -1207,12 +1206,12 @@ function openTripModal(editId){
         <div class="form-row"><label>行き先 <span class="req">*</span></label><input id="f_dest" type="text" value="${escapeHtml(existing?.destination||'')}" placeholder="例: 沖縄、ハワイ、バンコク"></div>
         <div class="form-row"><label>サブタイトル（任意）</label><input id="f_destSub" type="text" value="${escapeHtml(existing?.destSub||'')}" placeholder="例: 家族旅行・年末"></div>
         <div class="form-grid-2">
-          <div class="form-row"><label><span style="color:var(--kota)">●</span> こうた家 出発日</label><input id="f_kotaStart" type="date" value="${existing?.kotaStart||''}"></div>
-          <div class="form-row"><label><span style="color:var(--kota)">●</span> こうた家 帰宅日</label><input id="f_kotaEnd" type="date" value="${existing?.kotaEnd||''}"></div>
+          <div class="form-row"><label><span style="color:var(--kota)">●</span> KOTA 出発日</label><input id="f_kotaStart" type="date" value="${existing?.kotaStart||''}"></div>
+          <div class="form-row"><label><span style="color:var(--kota)">●</span> KOTA 帰宅日</label><input id="f_kotaEnd" type="date" value="${existing?.kotaEnd||''}"></div>
         </div>
         <div class="form-grid-2">
-          <div class="form-row"><label><span style="color:var(--tokihiko)">●</span> 父家 出発日</label><input id="f_tokihikoStart" type="date" value="${existing?.tokihikoStart||''}"></div>
-          <div class="form-row"><label><span style="color:var(--tokihiko)">●</span> 父家 帰宅日</label><input id="f_tokihikoEnd" type="date" value="${existing?.tokihikoEnd||''}"></div>
+          <div class="form-row"><label><span style="color:var(--tokihiko)">●</span> TOKIHIKO 出発日</label><input id="f_tokihikoStart" type="date" value="${existing?.tokihikoStart||''}"></div>
+          <div class="form-row"><label><span style="color:var(--tokihiko)">●</span> TOKIHIKO 帰宅日</label><input id="f_tokihikoEnd" type="date" value="${existing?.tokihikoEnd||''}"></div>
         </div>
         <div class="form-row"><label>メモ（任意）</label><textarea id="f_notes" placeholder="旅行の目的や共有事項など">${escapeHtml(existing?.notes||'')}</textarea></div>
         <div class="modal-actions">
