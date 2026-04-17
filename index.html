@@ -9,15 +9,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --cream:#f5ede0;
-    --cream-2:#ebe0ce;
+    --cream:#fce8ea;
+    --cream-2:#f7d7da;
     --paper:#ffffff;
-    --paper-2:#fffdf8;
+    --paper-2:#fffafb;
     --ink:#1a1a1a;
     --ink-soft:#444444;
     --muted:#888888;
-    --line:#d0c5ad;
-    --line-soft:#e5dcc8;
+    --line:#e8c0c5;
+    --line-soft:#f0d8dc;
 
     /* チーム色 — はっきりと見分けやすい青と赤橙 */
     --kota:#1565c0;
@@ -68,22 +68,56 @@
   .brand h1{font-size:22px;font-weight:700;color:var(--ink)}
   .brand .brand-sub{display:block;font-size:12px;color:var(--muted);margin-top:2px;font-weight:400}
   .team-switch{display:flex;align-items:center;gap:10px;flex-shrink:0}
-  .team-pill{
+  .user-mgr-btn{
     display:flex;align-items:center;gap:8px;
-    padding:8px 14px;border-radius:10px;
-    background:var(--paper);border:2px solid var(--line-soft);
+    padding:10px 16px;border-radius:10px;
+    background:var(--paper);border:2px solid var(--line);
     font-size:14px;font-weight:600;color:var(--ink);
+    transition:all .15s;
   }
-  .team-pill .dot{width:10px;height:10px;border-radius:50%;background:var(--muted)}
-  .team-pill.kota{border-color:var(--kota);background:var(--kota-soft);color:var(--kota-dark)}
-  .team-pill.kota .dot{background:var(--kota)}
-  .team-pill.tokihiko{border-color:var(--tokihiko);background:var(--tokihiko-soft);color:var(--tokihiko-dark)}
-  .team-pill.tokihiko .dot{background:var(--tokihiko)}
-  .btn-switch{
-    background:transparent;color:var(--ink-soft);font-size:13px;
-    padding:6px 12px;border:1px solid var(--line);border-radius:8px;
+  .user-mgr-btn:hover{background:var(--cream-2);border-color:var(--gold)}
+  .user-mgr-btn .umb-icon{font-size:18px}
+  @media(max-width:640px){.user-mgr-btn .umb-text{display:none}.user-mgr-btn{padding:10px}}
+
+  /* User list in management modal */
+  .user-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+  .user-row{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 14px;background:var(--paper-2);
+    border:2px solid var(--line-soft);border-radius:10px;
   }
-  .btn-switch:hover{background:var(--cream-2)}
+  .user-row .user-avatar{
+    width:36px;height:36px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:14px;font-weight:700;flex-shrink:0;
+  }
+  .user-row .user-avatar.kota{background:var(--kota)}
+  .user-row .user-avatar.tokihiko{background:var(--tokihiko)}
+  .user-row .user-info{flex:1;min-width:0}
+  .user-row .user-name{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:2px}
+  .user-row .user-team-label{font-size:12px;color:var(--ink-soft)}
+  .user-row .user-actions{display:flex;gap:6px}
+  .user-row .btn-icon{padding:6px 10px;font-size:12px;border-radius:6px;background:var(--paper);border:1px solid var(--line);color:var(--ink-soft);font-weight:500}
+  .user-row .btn-icon:hover{background:var(--cream-2)}
+  .user-row .btn-icon.del{color:#c62828;border-color:#ef9a9a}
+  .user-empty{text-align:center;padding:30px 20px;color:var(--muted);font-size:13px;background:var(--cream);border-radius:10px;margin-bottom:16px}
+
+  /* Poster selector */
+  .poster-picker{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+  .poster-option{
+    display:flex;align-items:center;gap:12px;
+    padding:10px 14px;border:2px solid var(--line-soft);border-radius:10px;
+    background:var(--paper);cursor:pointer;transition:all .15s;
+  }
+  .poster-option:hover{background:var(--cream-2)}
+  .poster-option.selected{border-width:3px;padding:9px 13px}
+  .poster-option.selected.kota{border-color:var(--kota);background:var(--kota-soft)}
+  .poster-option.selected.tokihiko{border-color:var(--tokihiko);background:var(--tokihiko-soft)}
+  .poster-option .user-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0}
+  .poster-option .user-avatar.kota{background:var(--kota)}
+  .poster-option .user-avatar.tokihiko{background:var(--tokihiko)}
+  .poster-option .poster-name{font-weight:600;color:var(--ink);flex:1}
+  .poster-option .poster-team{font-size:11px;color:var(--ink-soft)}
 
   /* ============ TOP NAV ============ */
   .main-nav{max-width:1100px;margin:14px auto 0;display:flex;gap:0;padding:0;border-bottom:1px solid transparent}
@@ -404,23 +438,28 @@
   .lightbox-nav{
     position:absolute;top:50%;transform:translateY(-50%);
     width:56px;height:56px;border-radius:50%;
-    background:rgba(255,255,255,.15);color:#fff;font-size:26px;font-weight:700;
+    background:rgba(0,0,0,.65);color:#fff;font-size:28px;font-weight:700;
     display:flex;align-items:center;justify-content:center;
-    border:none;cursor:pointer;z-index:10;
+    border:2px solid rgba(255,255,255,.9);cursor:pointer;z-index:20;
+    box-shadow:0 4px 12px rgba(0,0,0,.5);
   }
-  .lightbox-nav:hover{background:rgba(255,255,255,.28)}
-  .lightbox-nav.prev{left:20px}
-  .lightbox-nav.next{right:20px}
+  .lightbox-nav:hover{background:rgba(0,0,0,.85)}
+  .lightbox-nav.prev{left:16px}
+  .lightbox-nav.next{right:16px}
   .lightbox-nav:disabled{opacity:.3;cursor:not-allowed}
   .lightbox-counter{
     position:absolute;top:24px;left:50%;transform:translateX(-50%);
-    background:rgba(0,0,0,.6);color:#fff;
-    padding:6px 16px;border-radius:999px;font-size:14px;font-weight:600;
+    background:rgba(0,0,0,.75);color:#fff;
+    padding:8px 18px;border-radius:999px;font-size:15px;font-weight:700;
+    z-index:20;box-shadow:0 2px 8px rgba(0,0,0,.4);
   }
+  .lightbox-tap-zone{position:absolute;top:0;bottom:0;width:40%;z-index:5;cursor:pointer}
+  .lightbox-tap-zone.left{left:0}
+  .lightbox-tap-zone.right{right:0}
   @media(max-width:640px){
-    .lightbox-nav{width:44px;height:44px;font-size:22px}
-    .lightbox-nav.prev{left:10px}
-    .lightbox-nav.next{right:10px}
+    .lightbox-nav{width:48px;height:48px;font-size:24px}
+    .lightbox-nav.prev{left:8px}
+    .lightbox-nav.next{right:8px}
   }
 
   /* ============ SETUP BANNER ============ */
@@ -454,7 +493,6 @@
     .detail-header{padding:22px 20px}
     .detail-header h2{font-size:26px}
     .detail-header .header-actions{position:static;margin-top:16px}
-    .team-pill{font-size:13px;padding:7px 12px}
     .main-nav button{padding:12px 16px;font-size:15px}
     .month-header h3{font-size:22px}
   }
@@ -472,11 +510,10 @@
       </div>
     </div>
     <div class="team-switch">
-      <div class="team-pill" id="teamPill">
-        <span class="dot"></span>
-        <span id="teamPillName">未設定</span>
-      </div>
-      <button class="btn-switch" onclick="openTeamSelect()">切替</button>
+      <button class="user-mgr-btn" onclick="openUserManagement()" id="userMgrBtn">
+        <span class="umb-icon">👥</span>
+        <span class="umb-text">ユーザー管理</span>
+      </button>
     </div>
   </div>
   <nav class="main-nav" id="mainNav">
@@ -512,6 +549,8 @@ const USE_FIREBASE = !!FIREBASE_CONFIG.apiKey;
 const STATE = {
   currentTeam: localStorage.getItem('ft_team') || null,
   memberName: localStorage.getItem('ft_member') || '',
+  currentUserId: localStorage.getItem('ft_currentUserId') || null,
+  users: [],
   mainView: localStorage.getItem('ft_mainView') || 'trips',
   view: 'list',
   currentTripId: null,
@@ -522,6 +561,7 @@ const STATE = {
 
 const STORAGE_KEY = 'family_travel_data_v1';
 const STORAGE_KEY_MOMENTS = 'family_moments_data_v1';
+const STORAGE_KEY_USERS = 'family_users_v1';
 
 function loadData(){
   try{
@@ -534,14 +574,22 @@ function loadData(){
     if(raw){ STATE.moments = JSON.parse(raw); }
     else { STATE.moments = seedMoments(); saveMomentsData(); }
   }catch(e){ STATE.moments = []; }
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY_USERS);
+    if(raw){ STATE.users = JSON.parse(raw); }
+  }catch(e){ STATE.users = []; }
 }
 function saveData(){
-  if(USE_FIREBASE) return; // Firebase使用時はローカル保存不要
+  if(USE_FIREBASE) return;
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE.trips)); } catch(e){ console.error(e); }
 }
 function saveMomentsData(){
-  if(USE_FIREBASE) return; // Firebase使用時はローカル保存不要
+  if(USE_FIREBASE) return;
   try { localStorage.setItem(STORAGE_KEY_MOMENTS, JSON.stringify(STATE.moments)); } catch(e){ console.error(e); }
+}
+function saveUsersData(){
+  if(USE_FIREBASE) return;
+  try { localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(STATE.users)); } catch(e){ console.error(e); }
 }
 
 function seedTrips(){
@@ -608,6 +656,11 @@ async function initFirebase(){
     STATE.moments = Object.values(val).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
     render();
   });
+  onValue(ref(fbDb, 'users'), snap => {
+    const val = snap.val() || {};
+    STATE.users = Object.values(val).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+    render();
+  });
 }
 async function syncTrip(trip){
   if(!USE_FIREBASE){ saveData(); return; }
@@ -628,6 +681,17 @@ async function deleteMomentFB(mid){
   if(!USE_FIREBASE){ STATE.moments = STATE.moments.filter(m=>m.id!==mid); saveMomentsData(); return; }
   const { ref, remove } = window._fb;
   await remove(ref(fbDb, 'moments/'+mid));
+}
+
+async function syncUser(u){
+  if(!USE_FIREBASE){ saveUsersData(); return; }
+  const { ref, set } = window._fb;
+  await set(ref(fbDb, 'users/'+u.id), u);
+}
+async function deleteUserFB(uid){
+  if(!USE_FIREBASE){ STATE.users = STATE.users.filter(u=>u.id!==uid); saveUsersData(); return; }
+  const { ref, remove } = window._fb;
+  await remove(ref(fbDb, 'users/'+uid));
 }
 
 /* ========================================================================
@@ -795,7 +859,6 @@ function renderPhotoUploadField(prefix, existingUrls){
    RENDER
    ======================================================================== */
 function render(){
-  updateTeamPill();
   updateNav();
   const main = document.getElementById('main');
   if(STATE.mainView === 'moments'){ main.innerHTML = renderMomentsView(); return; }
@@ -803,15 +866,6 @@ function render(){
   else if(STATE.view === 'detail') main.innerHTML = renderDetail();
 }
 
-function updateTeamPill(){
-  const pill = document.getElementById('teamPill');
-  const name = document.getElementById('teamPillName');
-  pill.classList.remove('kota','tokihiko');
-  if(STATE.currentTeam){
-    pill.classList.add(STATE.currentTeam);
-    name.textContent = teamLabel(STATE.currentTeam) + (STATE.memberName?' / '+STATE.memberName:'');
-  } else { name.textContent = '未選択'; }
-}
 function updateNav(){
   document.getElementById('nav-trips').classList.toggle('active', STATE.mainView==='trips');
   document.getElementById('nav-moments').classList.toggle('active', STATE.mainView==='moments');
@@ -869,7 +923,7 @@ function renderList(){
           <span class="stat">🏨 宿泊 ${counts.hotel}</span>
           <span class="stat">🚗 車 ${counts.car}</span>
           <span class="stat">📷 写真 ${counts.photo}</span>
-          <span class="stat">💡 おすすめ ${counts.rec}</span>
+          <span class="stat">📝 その他 ${counts.rec}</span>
         </div>
       </div>
     `;
@@ -879,7 +933,7 @@ function renderList(){
     <div class="page-intro">
       <div>
         <h2>旅行の記録</h2>
-        <div class="sub">${STATE.trips.length}件の旅行 / ${teamLabel(STATE.currentTeam)}で投稿中</div>
+        <div class="sub">${STATE.trips.length}件の旅行</div>
       </div>
       <button class="btn" onclick="openTripModal()">+ 旅行を追加</button>
     </div>
@@ -926,7 +980,7 @@ function renderDetail(){
       <button class="tab ${DETAIL_TAB==='hotel'?'active':''}" onclick="setTab('hotel')">🏨 宿泊<span class="count">${counts.hotel}</span></button>
       <button class="tab ${DETAIL_TAB==='car'?'active':''}" onclick="setTab('car')">🚗 レンタカー<span class="count">${counts.car}</span></button>
       <button class="tab ${DETAIL_TAB==='photo'?'active':''}" onclick="setTab('photo')">📷 写真<span class="count">${counts.photo}</span></button>
-      <button class="tab ${DETAIL_TAB==='rec'?'active':''}" onclick="setTab('rec')">💡 おすすめ<span class="count">${counts.rec}</span></button>
+      <button class="tab ${DETAIL_TAB==='rec'?'active':''}" onclick="setTab('rec')">📝 その他<span class="count">${counts.rec}</span></button>
     </div>
     <div class="section">${renderTabContent(trip)}</div>
   `;
@@ -970,9 +1024,9 @@ function renderTimeline(trip){
 
 function renderTabContent(trip){
   if(DETAIL_TAB === 'overview') return renderOverview(trip);
-  const typeMap = {flight:'飛行機',hotel:'宿泊',car:'レンタカー',photo:'写真',rec:'おすすめ・メモ'};
+  const typeMap = {flight:'飛行機',hotel:'宿泊',car:'レンタカー',photo:'写真',rec:'その他・メモ'};
   const items = (trip.items||[]).filter(i=>i.type===DETAIL_TAB).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-  const addBtn = `<button class="btn ${STATE.currentTeam}" onclick="openItemModal('${DETAIL_TAB}')">+ ${teamLabel(STATE.currentTeam)}として追加</button>`;
+  const addBtn = `<button class="btn" onclick="openItemModal('${DETAIL_TAB}')">+ 追加する</button>`;
 
   if(DETAIL_TAB === 'photo'){
     const photos = items.map(i => `
@@ -1083,7 +1137,7 @@ function renderMomentsView(){
     return banner + `
       <div class="page-intro">
         <div><h2>日常の記録</h2><div class="sub">写真・メッセージで近況を共有</div></div>
-        <button class="btn ${STATE.currentTeam}" onclick="openMomentModal()">+ 投稿する</button>
+        <button class="btn" onclick="openMomentModal()">+ 投稿する</button>
       </div>
       <div class="empty-state"><div class="icon">📷</div><div>まだ投稿がありません</div></div>
     `;
@@ -1093,8 +1147,8 @@ function renderMomentsView(){
 
   return banner + `
     <div class="page-intro">
-      <div><h2>日常の記録</h2><div class="sub">${STATE.moments.length}件の投稿 / ${teamLabel(STATE.currentTeam)}で投稿中</div></div>
-      <button class="btn ${STATE.currentTeam}" onclick="openMomentModal()">+ 投稿する</button>
+      <div><h2>日常の記録</h2><div class="sub">${STATE.moments.length}件の投稿</div></div>
+      <button class="btn" onclick="openMomentModal()">+ 投稿する</button>
     </div>
     <div class="moments-controls">
       <button class="filter-chip ${STATE.momentFilter==='all'?'active':''}" onclick="setMomentFilter('all')">すべて</button>
@@ -1222,6 +1276,8 @@ function renderLightbox(){
     <div class="lightbox" onclick="if(event.target===this)closeLightbox()">
       <button class="close" onclick="closeLightbox()">×</button>
       ${isAlbum ? `<div class="lightbox-counter">${idx+1} / ${total}</div>` : ''}
+      ${isAlbum && idx > 0 ? `<div class="lightbox-tap-zone left" onclick="lightboxPrev()"></div>` : ''}
+      ${isAlbum && idx < total-1 ? `<div class="lightbox-tap-zone right" onclick="lightboxNext()"></div>` : ''}
       ${isAlbum ? `<button class="lightbox-nav prev" onclick="lightboxPrev()" ${idx===0?'disabled':''}>‹</button>` : ''}
       ${isAlbum ? `<button class="lightbox-nav next" onclick="lightboxNext()" ${idx===total-1?'disabled':''}>›</button>` : ''}
       <div class="media-wrap"><img src="${escapeHtml(currentUrl)}" alt=""></div>
@@ -1259,6 +1315,24 @@ document.addEventListener('keydown', e => {
   else if(e.key === 'Escape') closeLightbox();
 });
 
+// Touch/swipe navigation for lightbox
+let _swipeStartX = null;
+document.addEventListener('touchstart', e => {
+  const lb = document.getElementById('lightboxRoot').querySelector('.lightbox');
+  if(!lb) return;
+  _swipeStartX = e.touches[0].clientX;
+}, {passive:true});
+document.addEventListener('touchend', e => {
+  const lb = document.getElementById('lightboxRoot').querySelector('.lightbox');
+  if(!lb || _swipeStartX === null) return;
+  const dx = e.changedTouches[0].clientX - _swipeStartX;
+  _swipeStartX = null;
+  if(Math.abs(dx) > 60){
+    if(dx > 0) lightboxPrev();
+    else lightboxNext();
+  }
+}, {passive:true});
+
 function closeLightbox(){ document.getElementById('lightboxRoot').innerHTML = ''; }
 
 /* ========================================================================
@@ -1273,43 +1347,159 @@ function setTab(t){ DETAIL_TAB=t; render(); }
    ======================================================================== */
 function closeModal(){ document.getElementById('modalRoot').innerHTML = ''; }
 
-function openTeamSelect(){
+function openUserManagement(){
   const root = document.getElementById('modalRoot');
+  const usersList = STATE.users.length === 0
+    ? `<div class="user-empty">まだユーザーが登録されていません<br>下の「+ 新しいユーザーを追加」から登録してください</div>`
+    : `<div class="user-list">${STATE.users.map(u => `
+        <div class="user-row">
+          <div class="user-avatar ${u.team}">${escapeHtml(u.name.slice(0,1))}</div>
+          <div class="user-info">
+            <div class="user-name">${escapeHtml(u.name)}</div>
+            <div class="user-team-label">${u.team === 'kota' ? 'KOTA' : 'TOKIHIKO'}</div>
+          </div>
+          <div class="user-actions">
+            <button class="btn-icon" onclick="openUserEditForm('${u.id}')">編集</button>
+            <button class="btn-icon del" onclick="confirmDeleteUser('${u.id}')">削除</button>
+          </div>
+        </div>
+      `).join('')}</div>`;
+
   root.innerHTML = `
-    <div class="modal-backdrop" onclick="if(event.target===this && '${STATE.currentTeam||''}')closeModal()">
+    <div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
       <div class="modal">
-        <h3>あなたはどちらですか？</h3>
-        <div class="modal-sub">投稿するときにお名前が表示されます</div>
-        <div class="team-choice">
-          <label onclick="pickTeam('kota')">
-            <input type="radio" name="team" value="kota" ${STATE.currentTeam==='kota'?'checked':''}>
-            <span class="label-inner k"><span class="team-label-name">KOTA</span></span>
-          </label>
-          <label onclick="pickTeam('tokihiko')">
-            <input type="radio" name="team" value="tokihiko" ${STATE.currentTeam==='tokihiko'?'checked':''}>
-            <span class="label-inner t"><span class="team-label-name">TOKIHIKO</span></span>
-          </label>
-        </div>
-        <div class="form-row">
-          <label>お名前（任意）</label>
-          <input id="memberNameInput" type="text" value="${escapeHtml(STATE.memberName)}" placeholder="例: KOTA / TOKIHIKO">
-          <div class="hint">投稿者名として表示されます</div>
-        </div>
-        <div class="modal-actions"><button class="btn" onclick="saveTeam()">決定</button></div>
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <h3>ユーザー管理</h3>
+        <div class="modal-sub">投稿するときに使用する名前を登録します</div>
+        ${usersList}
+        <button class="btn" style="width:100%;justify-content:center" onclick="openUserEditForm()">+ 新しいユーザーを追加</button>
       </div>
     </div>
   `;
 }
-function pickTeam(t){ document.querySelectorAll('.team-choice input').forEach(i=>i.checked=(i.value===t)); STATE.currentTeam=t; }
-function saveTeam(){
-  const t = document.querySelector('.team-choice input:checked');
-  const team = t ? t.value : STATE.currentTeam;
-  if(!team){ toast('KOTAかTOKIHIKOを選択してください'); return; }
-  STATE.currentTeam = team;
-  STATE.memberName = (document.getElementById('memberNameInput').value||'').trim();
-  localStorage.setItem('ft_team', team);
-  localStorage.setItem('ft_member', STATE.memberName);
-  closeModal(); render(); toast('設定を保存しました');
+
+function openUserEditForm(editId){
+  const existing = editId ? STATE.users.find(u=>u.id===editId) : null;
+  const root = document.getElementById('modalRoot');
+  root.innerHTML = `
+    <div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+      <div class="modal">
+        <button class="modal-close" onclick="openUserManagement()">×</button>
+        <h3>${existing?'ユーザーを編集':'新しいユーザー'}</h3>
+        <div class="modal-sub">${existing?'情報を変更できます':'お名前と所属を登録してください'}</div>
+        <div class="form-row">
+          <label>お名前 <span class="req">*</span></label>
+          <input id="u_name" type="text" value="${escapeHtml(existing?.name||'')}" placeholder="例: こうた / 父 / 妻">
+        </div>
+        <div class="form-row">
+          <label>所属 <span class="req">*</span></label>
+          <div class="team-choice">
+            <label onclick="pickUserTeam('kota')">
+              <input type="radio" name="utm" value="kota" ${(!existing||existing.team==='kota')?'checked':''}>
+              <span class="label-inner k"><span class="team-label-name">KOTA</span></span>
+            </label>
+            <label onclick="pickUserTeam('tokihiko')">
+              <input type="radio" name="utm" value="tokihiko" ${existing?.team==='tokihiko'?'checked':''}>
+              <span class="label-inner t"><span class="team-label-name">TOKIHIKO</span></span>
+            </label>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn ghost" onclick="openUserManagement()">キャンセル</button>
+          <button class="btn" onclick="saveUser('${editId||''}')">${existing?'保存':'追加'}</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function pickUserTeam(t){ document.querySelectorAll('input[name="utm"]').forEach(i=>i.checked=(i.value===t)); }
+
+async function saveUser(editId){
+  const name = document.getElementById('u_name').value.trim();
+  const teamEl = document.querySelector('input[name="utm"]:checked');
+  const team = teamEl ? teamEl.value : 'kota';
+  if(!name){ toast('お名前を入力してください'); return; }
+
+  let u;
+  if(editId){
+    u = STATE.users.find(x=>x.id===editId);
+    if(!u) return;
+    u.name = name;
+    u.team = team;
+  } else {
+    u = { id:uid(), name, team, createdAt:Date.now() };
+    STATE.users.push(u);
+  }
+  try {
+    await syncUser(u);
+    saveUsersData();
+    openUserManagement(); // return to list
+    toast(editId?'更新しました':'ユーザーを追加しました');
+  } catch(err){
+    toast('保存に失敗しました');
+  }
+}
+
+async function confirmDeleteUser(uid){
+  const u = STATE.users.find(x=>x.id===uid);
+  if(!u) return;
+  if(!confirm(`「${u.name}」を削除しますか？\n※過去の投稿は残ります`)) return;
+  await deleteUserFB(uid);
+  STATE.users = STATE.users.filter(x=>x.id!==uid);
+  saveUsersData();
+  openUserManagement();
+  toast('削除しました');
+}
+
+/* Poster selector for post modals */
+function renderPosterPicker(prefix, selectedUserId){
+  if(STATE.users.length === 0){
+    return `
+      <div class="form-row">
+        <label>投稿者 <span class="req">*</span></label>
+        <div class="user-empty" style="text-align:left;padding:14px">
+          ユーザーが登録されていません。<br>
+          <button type="button" class="btn small" style="margin-top:8px" onclick="closeModal();openUserManagement()">ユーザー管理を開く</button>
+        </div>
+      </div>
+    `;
+  }
+  return `
+    <div class="form-row">
+      <label>投稿者 <span class="req">*</span></label>
+      <div class="poster-picker" id="${prefix}_posterPicker">
+        ${STATE.users.map(u => `
+          <label class="poster-option ${selectedUserId===u.id?'selected '+u.team:''}" onclick="selectPoster('${prefix}','${u.id}')">
+            <input type="radio" name="${prefix}_poster" value="${u.id}" ${selectedUserId===u.id?'checked':''} hidden>
+            <div class="user-avatar ${u.team}">${escapeHtml(u.name.slice(0,1))}</div>
+            <span class="poster-name">${escapeHtml(u.name)}</span>
+            <span class="poster-team">${u.team === 'kota' ? 'KOTA' : 'TOKIHIKO'}</span>
+          </label>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function selectPoster(prefix, userId){
+  document.querySelectorAll(`input[name="${prefix}_poster"]`).forEach(i => { i.checked = (i.value === userId); });
+  const picker = document.getElementById(prefix + '_posterPicker');
+  if(picker){
+    picker.querySelectorAll('.poster-option').forEach(el => el.classList.remove('selected','kota','tokihiko'));
+    const selectedInput = picker.querySelector(`input[value="${userId}"]`);
+    if(selectedInput){
+      const user = STATE.users.find(u => u.id === userId);
+      if(user){ selectedInput.parentElement.classList.add('selected', user.team); }
+    }
+  }
+  localStorage.setItem('ft_currentUserId', userId);
+  STATE.currentUserId = userId;
+}
+
+function getSelectedPoster(prefix){
+  const el = document.querySelector(`input[name="${prefix}_poster"]:checked`);
+  if(!el) return null;
+  return STATE.users.find(u => u.id === el.value) || null;
 }
 
 function openTripModal(editId){
@@ -1369,10 +1559,22 @@ function openItemModal(type, editId){
   const trip = STATE.trips.find(t=>t.id===STATE.currentTripId);
   if(!trip) return;
   const existing = editId ? (trip.items||[]).find(i=>i.id===editId) : null;
-  const team = existing ? existing.team : STATE.currentTeam;
-  const typeMap = {flight:'飛行機',hotel:'宿泊',car:'レンタカー',photo:'写真',rec:'おすすめ・メモ'};
+  const typeMap = {flight:'飛行機',hotel:'宿泊',car:'レンタカー',photo:'写真',rec:'その他・メモ'};
   const f = existing?.fields || {};
   let formFields = '';
+
+  // Determine initial user
+  let initialUserId = null;
+  if(existing && existing.userId) initialUserId = existing.userId;
+  else if(existing && existing.createdBy){
+    const matched = STATE.users.find(u => u.name === existing.createdBy);
+    if(matched) initialUserId = matched.id;
+  }
+  if(!initialUserId) initialUserId = STATE.currentUserId;
+  if(!initialUserId && STATE.users.length > 0) initialUserId = STATE.users[0].id;
+
+  const selectedUser = STATE.users.find(u => u.id === initialUserId);
+  const btnClass = selectedUser ? selectedUser.team : '';
 
   if(type === 'flight'){
     formFields = `
@@ -1450,12 +1652,13 @@ function openItemModal(type, editId){
       <div class="modal">
         <button class="modal-close" onclick="closeModal()">×</button>
         <h3>${iconFor(type)} ${existing?'編集':'追加'}：${typeMap[type]}</h3>
-        <div class="modal-sub">${existing?teamLabel(team)+'の投稿':teamLabel(STATE.currentTeam)+'として投稿'}</div>
+        <div class="modal-sub">旅行の情報を追加します</div>
+        ${renderPosterPicker('i', initialUserId)}
         ${formFields}
-        <div class="form-row"><label>メモ・おすすめポイント</label><textarea id="i_notes" placeholder="感想、お得情報、注意点など">${escapeHtml(existing?.notes||'')}</textarea></div>
+        <div class="form-row"><label>メモ・その他</label><textarea id="i_notes" placeholder="感想、お得情報、注意点など">${escapeHtml(existing?.notes||'')}</textarea></div>
         <div class="modal-actions">
           <button class="btn ghost" onclick="closeModal()">キャンセル</button>
-          <button class="btn ${team}" onclick="saveItem('${type}','${editId||''}')">${existing?'保存':'追加'}</button>
+          <button class="btn ${btnClass}" onclick="saveItem('${type}','${editId||''}')">${existing?'保存':'追加'}</button>
         </div>
       </div>
     </div>
@@ -1468,6 +1671,17 @@ async function saveItem(type, editId){
   const title = document.getElementById('i_title').value.trim();
   if(!title && type!=='photo'){ toast('タイトルを入力してください'); return; }
 
+  const poster = getSelectedPoster('i');
+  if(!poster){
+    if(STATE.users.length === 0){
+      toast('先にユーザーを登録してください');
+      closeModal(); openUserManagement();
+    } else {
+      toast('投稿者を選んでください');
+    }
+    return;
+  }
+
   const getV = id => { const el=document.getElementById(id); return el?el.value.trim():''; };
 
   // Photo: handle multi-upload — when adding, create one item per photo
@@ -1479,23 +1693,23 @@ async function saveItem(type, editId){
     const notes = getV('i_notes');
 
     if(editId){
-      // Edit: replace existing single item's URL with first photo; any additional photos become new items
       const item = trip.items.find(i=>i.id===editId);
       if(item){
         item.title = title;
         item.fields = {url: photoUrls[0]};
         item.notes = notes;
-        // Add extras as new items
+        item.team = poster.team;
+        item.userId = poster.id;
+        item.createdBy = poster.name;
         for(let i = 1; i < photoUrls.length; i++){
-          trip.items.push({ id:uid(), type:'photo', team:STATE.currentTeam, title, fields:{url:photoUrls[i]}, notes,
-            createdAt:Date.now()+i, createdBy:STATE.memberName||teamLabel(STATE.currentTeam) });
+          trip.items.push({ id:uid(), type:'photo', team:poster.team, userId:poster.id, title, fields:{url:photoUrls[i]}, notes,
+            createdAt:Date.now()+i, createdBy:poster.name });
         }
       }
     } else {
-      // New: create one item per photo
       for(let i = 0; i < photoUrls.length; i++){
-        trip.items.push({ id:uid(), type:'photo', team:STATE.currentTeam, title, fields:{url:photoUrls[i]}, notes,
-          createdAt:Date.now()+i, createdBy:STATE.memberName||teamLabel(STATE.currentTeam) });
+        trip.items.push({ id:uid(), type:'photo', team:poster.team, userId:poster.id, title, fields:{url:photoUrls[i]}, notes,
+          createdAt:Date.now()+i, createdBy:poster.name });
       }
     }
 
@@ -1504,8 +1718,12 @@ async function saveItem(type, editId){
       saveData(); closeModal(); render();
       toast((editId?'更新しました':`${photoUrls.length}枚追加しました`));
     } catch(err) {
-      if(err.name === 'QuotaExceededError' || String(err).includes('quota')){
-        toast('保存容量がいっぱいです。古い写真を削除してください');
+      console.error(err);
+      const msg = String(err.message || err);
+      if(err.name === 'QuotaExceededError' || msg.includes('quota')){
+        toast('端末の保存容量がいっぱいです');
+      } else if(msg.includes('10 MB') || msg.includes('too large') || msg.includes('size')){
+        toast('写真の枚数が多すぎます');
       } else {
         toast('保存に失敗しました');
       }
@@ -1522,18 +1740,23 @@ async function saveItem(type, editId){
   if(!trip.items) trip.items = [];
   if(editId){
     const item = trip.items.find(i=>i.id===editId);
-    if(item){ item.title=title; item.fields=fields; item.notes=getV('i_notes'); }
+    if(item){
+      item.title=title; item.fields=fields; item.notes=getV('i_notes');
+      item.team = poster.team; item.userId = poster.id; item.createdBy = poster.name;
+    }
   } else {
-    trip.items.push({ id:uid(), type, team:STATE.currentTeam, title, fields, notes:getV('i_notes'),
-      createdAt:Date.now(), createdBy:STATE.memberName||teamLabel(STATE.currentTeam) });
+    trip.items.push({ id:uid(), type, team:poster.team, userId:poster.id, title, fields, notes:getV('i_notes'),
+      createdAt:Date.now(), createdBy:poster.name });
   }
   try {
     await syncTrip(trip);
     saveData(); closeModal(); render();
     toast(editId?'更新しました':'追加しました');
   } catch(err) {
-    if(err.name === 'QuotaExceededError' || String(err).includes('quota')){
-      toast('保存容量がいっぱいです。古い写真を削除してください');
+    console.error(err);
+    const msg = String(err.message || err);
+    if(err.name === 'QuotaExceededError' || msg.includes('quota')){
+      toast('端末の保存容量がいっぱいです');
     } else {
       toast('保存に失敗しました');
     }
@@ -1552,15 +1775,29 @@ async function confirmDeleteItem(itemId){
 /* ----- MOMENT MODAL ----- */
 function openMomentModal(editId){
   const existing = editId ? STATE.moments.find(m=>m.id===editId) : null;
-  const team = existing ? existing.team : STATE.currentTeam;
   const today = new Date().toISOString().split('T')[0];
+
+  // Determine initial selected user
+  let initialUserId = null;
+  if(existing && existing.userId) initialUserId = existing.userId;
+  else if(existing && existing.createdBy){
+    const matched = STATE.users.find(u => u.name === existing.createdBy);
+    if(matched) initialUserId = matched.id;
+  }
+  if(!initialUserId) initialUserId = STATE.currentUserId;
+  if(!initialUserId && STATE.users.length > 0) initialUserId = STATE.users[0].id;
+
+  const selectedUser = STATE.users.find(u => u.id === initialUserId);
+  const btnClass = selectedUser ? selectedUser.team : '';
 
   document.getElementById('modalRoot').innerHTML = `
     <div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
       <div class="modal">
         <button class="modal-close" onclick="closeModal()">×</button>
         <h3>${existing?'投稿を編集':'新しい投稿'}</h3>
-        <div class="modal-sub">${existing?teamLabel(team)+'の投稿':teamLabel(STATE.currentTeam)+'として投稿'}</div>
+        <div class="modal-sub">写真やメッセージを共有しましょう</div>
+
+        ${renderPosterPicker('m', initialUserId)}
 
         <div class="form-row">
           <label>種類</label>
@@ -1593,7 +1830,7 @@ function openMomentModal(editId){
 
         <div class="modal-actions">
           <button class="btn ghost" onclick="closeModal()">キャンセル</button>
-          <button class="btn ${team}" onclick="saveMoment('${editId||''}')">${existing?'保存':'投稿'}</button>
+          <button class="btn ${btnClass}" onclick="saveMoment('${editId||''}')">${existing?'保存':'投稿'}</button>
         </div>
       </div>
     </div>
@@ -1625,6 +1862,17 @@ async function saveMoment(editId){
   const desc = document.getElementById('m_desc').value.trim();
   const date = document.getElementById('m_date').value;
 
+  const poster = getSelectedPoster('m');
+  if(!poster){
+    if(STATE.users.length === 0){
+      toast('先にユーザーを登録してください');
+      closeModal(); openUserManagement();
+    } else {
+      toast('投稿者を選んでください');
+    }
+    return;
+  }
+
   let mediaUrls = [];
   if(type === 'photo'){
     mediaUrls = window._photos_m || [];
@@ -1641,16 +1889,18 @@ async function saveMoment(editId){
     m = STATE.moments.find(x=>x.id===editId);
     if(!m) return;
   } else {
-    m = { id:uid(), team:STATE.currentTeam, createdAt:Date.now(),
-      createdBy: STATE.memberName || teamLabel(STATE.currentTeam) };
+    m = { id:uid(), createdAt:Date.now() };
     STATE.moments.unshift(m);
   }
   m.type = type;
+  m.team = poster.team;
+  m.userId = poster.id;
+  m.createdBy = poster.name;
   m.title = title;
   m.description = desc;
   m.date = date;
   m.mediaUrls = mediaUrls;
-  m.mediaUrl = mediaUrls[0] || '';  // for backwards compat
+  m.mediaUrl = mediaUrls[0] || '';
 
   try {
     await syncMoment(m);
