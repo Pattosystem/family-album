@@ -535,8 +535,14 @@ function loadData(){
     else { STATE.moments = seedMoments(); saveMomentsData(); }
   }catch(e){ STATE.moments = []; }
 }
-function saveData(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE.trips)); }
-function saveMomentsData(){ localStorage.setItem(STORAGE_KEY_MOMENTS, JSON.stringify(STATE.moments)); }
+function saveData(){
+  if(USE_FIREBASE) return; // Firebase使用時はローカル保存不要
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE.trips)); } catch(e){ console.error(e); }
+}
+function saveMomentsData(){
+  if(USE_FIREBASE) return; // Firebase使用時はローカル保存不要
+  try { localStorage.setItem(STORAGE_KEY_MOMENTS, JSON.stringify(STATE.moments)); } catch(e){ console.error(e); }
+}
 
 function seedTrips(){
   return [{
@@ -1652,8 +1658,14 @@ async function saveMoment(editId){
     closeModal(); render();
     toast(editId?'更新しました':'投稿しました');
   } catch(err) {
-    if(err.name === 'QuotaExceededError' || String(err).includes('quota')){
-      toast('保存容量がいっぱいです。古い投稿を削除してください');
+    console.error(err);
+    const msg = String(err.message || err);
+    if(err.name === 'QuotaExceededError' || msg.includes('quota')){
+      toast('端末の保存容量がいっぱいです');
+    } else if(msg.includes('10 MB') || msg.includes('too large') || msg.includes('size')){
+      toast('写真の枚数が多すぎます。10枚以下に減らしてください');
+    } else if(msg.includes('PERMISSION_DENIED') || msg.includes('permission')){
+      toast('アクセス権限エラー。Firebaseのルール設定を確認してください');
     } else {
       toast('保存に失敗しました');
     }
